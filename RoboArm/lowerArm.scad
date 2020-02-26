@@ -66,38 +66,82 @@ main();
 module main(){
     //import shoulder and connected frame
     //internalArmFrame();
-    difference(){
-         union(){
-            translate([0, 0, ARM_SHLDR_ELBW_HEIGHT+PLATFORM_HEIGHT+16]) {
-                elbowPlatform();
-                elbowMountHousingMain();
-            }
-        }
-        translate([0, 0, (ARM_SHLDR_ELBW_HEIGHT/3)+2]){ 
-            outerArmShell();
-        }
-    }
-    // translate([0, 0, (ARM_SHLDR_ELBW_HEIGHT/3)]){ 
+    // difference(){
+    //      union(){
+    //         translate([0, 0, ARM_SHLDR_ELBW_HEIGHT+PLATFORM_HEIGHT+35]) {
+    //             elbowPlatform();
+    //             elbowMountHousingMain();
+    //         }
+    //     }
     //     outerArmShell();
     // }
+    translate([0, 0, 0]){ 
+        outerArmShell();
+    }
    
 }
 
 
 module internalArmFrame(){
     translate([0, 0, -60]) {
-        import("E:/Programerinos/userSave/RoboArm/drawings/rb_lower_arm_supportv2.stl");
+        import("E:/Programerinos/userSave/RoboArm/drawings/rb_lower_arm_supportv3.stl");
     }
 }
 
 module outerArmShell(){
-     difference(){
-        cylinder(r=OUTER_SHELL_RAD,h=OUTER_SHELL_HEIGHT, $fn=_sideRes);
-        translate([0,0,-2]){
-            cylinder(r=OUTER_SHELL_RAD-SHELL_THICKNESS,h=ARM_SHLDR_ELBW_HEIGHT+5, $fn=_sideRes);
+    union(){
+        difference(){
+            cylinder(r1=BEARING_OD+8,r2=(MOUNT_OUTER_WIDTH-35)/2,h=20, $fn=_sideRes);
+            translate([0,0,-2]){
+                cylinder(r1=BEARING_OD+6, r2=(MOUNT_OUTER_WIDTH-33)/2,h=20, $fn=_sideRes);
+            }
+            translate([0,0,16]){
+                cylinder(r=(MOUNT_OUTER_WIDTH-38)/2,h=20, $fn=_sideRes);
+            } 
         }
+
+        translate([0, 0,18]) {
+            difference(){
+                cylinder(r=(MOUNT_OUTER_WIDTH-34)/2,h=ARM_SHLDR_ELBW_HEIGHT, $fn=_sideRes);
+                translate([0, 0, -2]) {
+                        cylinder(r=((MOUNT_OUTER_WIDTH-34)/2)-2,h=ARM_SHLDR_ELBW_HEIGHT+5, $fn=_sideRes);
+                }
+            }
+        }
+
+        translate([0, 0, -2]){
+            difference(){
+                cylinder(r=BEARING_OD+7,h=2, $fn=_sideRes);
+                translate([0, 0, -2]) {
+                    cylinder(r=BEARING_OD+6,h=8, $fn=_sideRes);
+                }
+            }
+        }
+        
+        translate([0,0,212]){
+            mirror([0,0,1]){
+                 difference(){
+                    cylinder(r1=BEARING_OD+8,r2=(MOUNT_OUTER_WIDTH-35)/2,h=20, $fn=_sideRes);
+                    translate([0,0,-2]){
+                        cylinder(r1=BEARING_OD+6, r2=(MOUNT_OUTER_WIDTH-33)/2,h=20, $fn=_sideRes);
+                    }
+                    translate([0,0,16]){
+                        cylinder(r=(MOUNT_OUTER_WIDTH-38)/2,h=20, $fn=_sideRes);
+                    } 
+                } 
+            }
+
+            difference(){
+                cylinder(r=BEARING_OD+7,h=2, $fn=_sideRes);
+                translate([0, 0, -2]) {
+                    cylinder(r=BEARING_OD+6,h=8, $fn=_sideRes);
+                }
+            }
+        }
+        
     }
 }
+
 
 module elbowPlatform(){
     union(){
@@ -129,7 +173,7 @@ module elbowMountHousingMain(){
                     elbowHousingFrontSupport();
 
                     translate([25, -PLTFRM_PANEL_WTH, PLTFRM_PANEL_HT/1.8]) {
-                        cube([13,20,30],center=true);
+                        cube([13.5,20,30],center=true);
                     }            
                 }
                 

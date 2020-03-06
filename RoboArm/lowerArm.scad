@@ -68,78 +68,96 @@ module main(){
     //internalArmFrame();
     // difference(){
     //      union(){
-    //         translate([0, 0, ARM_SHLDR_ELBW_HEIGHT+PLATFORM_HEIGHT+35]) {
+    //         translate([0, 0, ARM_SHLDR_ELBW_HEIGHT+PLATFORM_HEIGHT+29.5]) {
     //             elbowPlatform();
     //             elbowMountHousingMain();
     //         }
     //     }
-    //     outerArmShell();
-    // }
-    translate([0, 0, 0]){ 
-        outerArmShell();
+    //     translate([0,0,206.5]){
+    //         rotate([0, 0, 90]) {
+    //             mirror([0,0,1]){
+    //                 footMountingScrewHole();
+
+    //                 mirror([1, 0, 0]) {
+    //                     footMountingScrewHole();
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     translate([0, 0, 8]) {
+    //         cylinder(r=AXLE_RAD+2.9, h=450, center=true, $fn=_sideRes);
+    //     }
+    //  }
+    translate([0, 0, 38.5]){ 
+        rotate([0, 0, 90]) {
+            outerArmShell();
+        }
     }
    
 }
 
 
 module internalArmFrame(){
-    translate([0, 0, -60]) {
-        import("E:/Programerinos/userSave/RoboArm/drawings/rb_lower_arm_supportv3.stl");
-    }
+  import("E:/Programerinos/userSave/RoboArm/drawings/rb_lower_arm_supportv5.stl");
 }
 
 module outerArmShell(){
     union(){
-        difference(){
-            cylinder(r1=BEARING_OD+8,r2=(MOUNT_OUTER_WIDTH-35)/2,h=20, $fn=_sideRes);
-            translate([0,0,-2]){
-                cylinder(r1=BEARING_OD+6, r2=(MOUNT_OUTER_WIDTH-33)/2,h=20, $fn=_sideRes);
-            }
-            translate([0,0,16]){
-                cylinder(r=(MOUNT_OUTER_WIDTH-38)/2,h=20, $fn=_sideRes);
-            } 
-        }
 
-        translate([0, 0,18]) {
-            difference(){
-                cylinder(r=(MOUNT_OUTER_WIDTH-34)/2,h=ARM_SHLDR_ELBW_HEIGHT, $fn=_sideRes);
-                translate([0, 0, -2]) {
-                        cylinder(r=((MOUNT_OUTER_WIDTH-34)/2)-2,h=ARM_SHLDR_ELBW_HEIGHT+5, $fn=_sideRes);
-                }
-            }
-        }
+       outerArmEndCap();
 
-        translate([0, 0, -2]){
+        translate([0, 0,15]) {
             difference(){
-                cylinder(r=BEARING_OD+7,h=2, $fn=_sideRes);
+                cylinder(r=(MOUNT_OUTER_WIDTH-34)/1.7,h=ARM_SHLDR_ELBW_HEIGHT-40, $fn=_sideRes);
                 translate([0, 0, -2]) {
-                    cylinder(r=BEARING_OD+6,h=8, $fn=_sideRes);
+                        cylinder(r=((MOUNT_OUTER_WIDTH-34)/2),h=ARM_SHLDR_ELBW_HEIGHT+5, $fn=_sideRes);
                 }
             }
         }
         
-        translate([0,0,212]){
+        translate([0,0,168]){
             mirror([0,0,1]){
-                 difference(){
-                    cylinder(r1=BEARING_OD+8,r2=(MOUNT_OUTER_WIDTH-35)/2,h=20, $fn=_sideRes);
-                    translate([0,0,-2]){
-                        cylinder(r1=BEARING_OD+6, r2=(MOUNT_OUTER_WIDTH-33)/2,h=20, $fn=_sideRes);
-                    }
-                    translate([0,0,16]){
-                        cylinder(r=(MOUNT_OUTER_WIDTH-38)/2,h=20, $fn=_sideRes);
-                    } 
-                } 
-            }
-
-            difference(){
-                cylinder(r=BEARING_OD+7,h=2, $fn=_sideRes);
-                translate([0, 0, -2]) {
-                    cylinder(r=BEARING_OD+6,h=8, $fn=_sideRes);
-                }
+                  outerArmEndCap();
             }
         }
         
     }
+}
+
+module outerArmEndCap(){
+ difference(){
+        difference(){
+            cylinder(r1=BEARING_OD+8,r2=(MOUNT_OUTER_WIDTH-35)/1.7,h=20, $fn=_sideRes);
+            translate([0,0,-2]){
+                cylinder(r1=BEARING_OD+6, r2=(MOUNT_OUTER_WIDTH-33)/2.3,h=20, $fn=_sideRes);
+            }
+            translate([0,0,16]){
+                cylinder(r=((MOUNT_OUTER_WIDTH-38)/2)+2,h=20, $fn=_sideRes);
+            } 
+        }
+
+        footMountingScrewHole();
+
+        mirror([1, 0, 0]) {
+            footMountingScrewHole();
+        }
+        
+
+    }
+}
+module footMountingScrewHole(){
+     translate([BEARING_OD+2, 0, -10]) {
+            cylinder(r=1.65,h=35,$fn=_sideRes);
+
+            translate([0, 0, 17]){
+                cylinder(r=2.5, h=14, $fn=_sideRes);
+            } 
+
+            // //nut slot
+            // translate([-1.3, 0, 19]) {
+            //     cube([9,5.8,2.8], center=true);
+            // }
+        }
 }
 
 
@@ -247,7 +265,7 @@ module elbowHousingFrontSupport(){
 }
 
 module elbowHousingSidePanel(){
-    translate([MOTOR_WIDTH-PLTFRM_PANEL_WTH/2.35, -1, 22]) {
+    translate([MOTOR_WIDTH-PLTFRM_PANEL_WTH/2.45, -1, 22]) {
           union(){
             cube([PLTFRM_PANEL_THICKNESS,MOTOR_WIDTH+10,PLTFRM_PANEL_WTH+15], center=true);
             difference(){
@@ -303,7 +321,45 @@ module bearingMount(){
 
 module bearingInsert(){
    rotate([0, 90, 0]) {
-        cylinder(r=(BEARING_OD/2)+.4,h=BEARING_HEIGHT, $fn=_sideRes);
+        cylinder(r=(BEARING_OD/2)+.1,h=BEARING_HEIGHT, $fn=_sideRes);
+    }
+}
+
+module innerArmXBrace(){
+    difference(){
+         union(){
+            rotate([0, 0, 45]) {
+                cube(size=[MOUNT_OUTER_WIDTH-36, BEARING_OD/3, 65], center=true);
+            }
+
+            rotate([0, 0, -45]) {
+                cube(size=[MOUNT_OUTER_WIDTH-36, BEARING_OD/3, 65], center=true);
+            }
+        }
+
+        translate([0, 0, -52]) {
+                union(){
+                    difference(){
+                        cylinder(r1=BEARING_OD+8,r2=(MOUNT_OUTER_WIDTH-35)/2,h=20, $fn=_sideRes);
+                        translate([0,0,-2]){
+                            cylinder(r1=BEARING_OD+6, r2=(MOUNT_OUTER_WIDTH-33)/2,h=20, $fn=_sideRes);
+                        }
+                        translate([0,0,16]){
+                            cylinder(r=(MOUNT_OUTER_WIDTH-38)/2,h=20, $fn=_sideRes);
+                        } 
+                    }
+
+                    translate([0, 0,18]) {
+                        difference(){
+                            cylinder(r=(MOUNT_OUTER_WIDTH-34)/2,h=ARM_SHLDR_ELBW_HEIGHT, $fn=_sideRes);
+                            translate([0, 0, -2]) {
+                                    cylinder(r=((MOUNT_OUTER_WIDTH-34)/2)-2,h=ARM_SHLDR_ELBW_HEIGHT+5, $fn=_sideRes);
+                            }
+                            
+                        }
+                    }
+            }
+        }
     }
 }
 

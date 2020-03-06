@@ -43,8 +43,8 @@ main();
 module main(){
     difference(){
         panelMount();
-          //crossSection(_crossectionThiccness);
-        //oppositeCrossSection(_crossectionThiccness);
+        //crossSection(_crossectionThiccness);
+        //SoppositeCrossSection(_crossectionThiccness);S
     }
     
 }
@@ -55,22 +55,21 @@ module gearPlatformInsert(){
 
 module Lid(){
     union(){
-          difference(){
-            translate([0, 0, 4]) {  
-                cylinder(r=LID_RAD, h=LID_HEIGHT, $fn=_sideRes);
-            }
-            translate([0, 0, -4]){
-                cylinder(r=18.2, h=15, $fn=_sideRes);
-            } 
+        //   difference(){
+        //     translate([0, 0, 4]) {  
+        //         cylinder(r=LID_RAD, h=LID_HEIGHT, $fn=_sideRes);
+        //     }
+        //     translate([0, 0, -4]){
+        //         cylinder(r=18.2, h=15, $fn=_sideRes);
+        //     } 
             
-        }
-       // lidGear();
+        // }
+       lidGear();
     }
 }
 
 module lidGear(){
     difference(){
-
          union(){
             difference(){
                 rotate([0, -90, 0]) {
@@ -78,15 +77,17 @@ module lidGear(){
                 }
                 translate([0, 0, -5.2]) {
                     union(){
-                        cylinder(r=BEARING_OD/2, h=BEARING_HEIGHT, $fn=_sideRes);
-                        translate([0, 0, -LID_HEIGHT/2]) {
-                            cylinder(r=5.2, h=LID_HEIGHT, $fn=_sideRes);
-                        }
+                        cylinder(r=BEARING_OD/2, h=BEARING_HEIGHT+1.5, $fn=_sideRes);
                         translate([0, 0, 15]) {
-                        cylinder(r=17.7, h=20, $fn=_sideRes);
+                            cylinder(r=17.7, h=20, $fn=_sideRes);
                         }
                     }
                 }
+
+                translate([0, 0, -7.7]) {
+                     cylinder(r=35, h=6, center=true, $fn=_sideRes);
+                }
+               
             }  
             translate([0, 0, 5]) {
                 cylinder(r=17.5, h=5, $fn=_sideRes);
@@ -94,10 +95,8 @@ module lidGear(){
 
         }
 
-        translate([0, 0, -10]){
-            cylinder(r=1.5,h=55,$fn=_sideRes);
-        } 
-            
+         cylinder(r=2, h=15, $fn=_sideRes);
+                    
     }
 }
 
@@ -124,7 +123,7 @@ module panelMount(){
         
 
         // radial symmetry foots
-        //foot();
+        foot();
         // rotate([0, 0, 90]) {
         //     foot();
         // }
@@ -140,7 +139,7 @@ module panelMount(){
         //bearingMount();
 
         translate([0,0,0]) {
-            Lid();
+            // /Lid();
         }
      }
 }
@@ -297,12 +296,10 @@ module footMountingScrewHole(){
                 cylinder(r=2.5, h=4, $fn=_sideRes);
             } 
 
-            translate([0,0,18]) {
-                cylinder(r=5, h=2, $fn=_sideRes);
-            }
+            //nut slot
 
-            translate([-3.2, 0, 19]) {
-                cube([5,10,2], center=true);
+            translate([-1.3, 0, 19]) {
+                cube([9,5.8,2.8], center=true);
             }
         }
     }

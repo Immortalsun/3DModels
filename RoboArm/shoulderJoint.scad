@@ -1,4 +1,8 @@
 //import lid platform to build off of
+//main base dimensions
+BASE_RAD = 69;//mm
+BASE_HEIGHT = 75;//mm
+BASE_THICKNESS = 5;//mm
 
 //LID PARAMS
 //Lid Dimensions
@@ -33,8 +37,8 @@ MOUNT_WALL_THICKNESS = 19.95;
 MOUNT_PANEL_RADIUS = 50; 
 
 //Shoulder Axle params
-AXLE_RAD = 5.6;//mm
-AXLE_HEIGHT = MOUNT_OUTER_WIDTH+(BEARING_HEIGHT*2);
+AXLE_RAD = 5.25;//mm
+AXLE_HEIGHT = MOUNT_OUTER_WIDTH+(BEARING_HEIGHT*14);
 SUPPORT_HEIGHT = 75;
 //Arm mount params
 ARM_MOUNT_HEIGHT = MOUNT_OUTER_WIDTH-(BEARING_HEIGHT*2)-15;
@@ -60,9 +64,10 @@ module main(){
             // }
 
             mainLowerArm();
-             //axleDriveGear();
+            //axleDriveGear();
         }
         axle();
+        // /crossSection(50);
     }
 }
 
@@ -149,12 +154,12 @@ module axleDriveGear(){
         rotate([0, 180, 0]){ 
             difference(){
                  import("E:/Programerinos/userSave/RoboArm/drawings/M1-T24 Gear.stl");
-                 translate([15.5, 0, 0]) {
+                 translate([17, 0, 0]) {
                     cube(20, center=true);
-                    rotate([0, 90, 0]) {
-                         cylinder(r=AXLE_RAD, h=45, center=true, $fn=_sideRes);
-                    }
-                   
+                 }
+
+                  translate([-19.7, 0, 0]) {
+                    cube(30, center=true);
                  }
             }
            
@@ -197,12 +202,16 @@ module bearingInsert(){
 }
 
 module bearingCap(){
-    translate([MOUNT_OUTER_WIDTH-BEARING_OD-(BEARING_HEIGHT)+1, 0, MOUNT_PANEL_RADIUS+BEARING_ID/1.1]) {
-        rotate([0, 90, 0]) {
-            cylinder(r=(BEARING_OD/2)+2.5,h=BEARING_HEIGHT/1.5, $fn=_sideRes);
+    union(){
+        translate([MOUNT_OUTER_WIDTH-BEARING_OD-(BEARING_HEIGHT)+1, 0, MOUNT_PANEL_RADIUS+BEARING_ID/1.1]) {
+            rotate([0, 90, 0]) {
+                cylinder(r=(BEARING_OD/2)+2.5,h=BEARING_HEIGHT, $fn=_sideRes);
+            }
+            bearingCapLockMount();
+            bearingCapOuterArm();
         }
-        bearingCapOuterArm();
     }
+    
 }
 
 module bearingCapOuterArm(){
@@ -211,33 +220,78 @@ module bearingCapOuterArm(){
     }
 }
 
+module bearingCapLockMount(){
+    translate([BEARING_HEIGHT+4.2, 0, 0]) {
+        difference(){
+             union(){
+                rotate([0, 90, 0]) {
+                    difference(){
+                        cylinder(r=15.4, h=BEARING_HEIGHT, center=true, $fn=_sideRes);
+                        translate([0, 0, 1]) {
+                            cylinder(r=12.8, h=BEARING_HEIGHT, center=true, $fn=_sideRes);
+                        }
+                    }
+                }
+            }
+            translate([0, 9, 10]) {
+                cylinder(r=1.65,h=10,center=true,$fn=_sideRes);
+                translate([0, 0, 0]){
+                    cylinder(r=2.5, h=5, $fn=_sideRes);
+                } 
+                
+            }
+            translate([0, -9, 10]) {
+                cylinder(r=1.65,h=10,center=true,$fn=_sideRes);
+                translate([0, 0, 0]){
+                    cylinder(r=2.5, h=5, $fn=_sideRes);
+                } 
+            }
+
+        }
+    }
+}
+
 module bearingCapLimitExtentsion(){
-    
+  
 }
 
 module mainLowerArm(){
     innerArmSupport();
     outerArmSupport();
+    
 }
 
 module innerArmSupport(){
     union(){
          translate([6, 0, MOUNT_PANEL_RADIUS+LID_HEIGHT+5]) {
             rotate([0, 90, 0]) {
-                difference(){
-                    cylinder(r=AXLE_RAD+2, h=ARM_MOUNT_HEIGHT, center=true, $fn=_sideRes);
-                    cylinder(r=AXLE_RAD, h=AXLE_HEIGHT, center=true, $fn=_sideRes);
-                }
+                   cylinder(r=AXLE_RAD+2, h=ARM_MOUNT_HEIGHT, center=true, $fn=_sideRes);
             }
         }
 
         //center axis
         translate([0, 0, MOTOR_HEIGHT+ARM_SHLDR_ELBW_HEIGHT/1.5]) {
             union(){
-                  translate([0, 0, 35]) {
-                          difference(){
-                            cylinder(r=AXLE_RAD+2, h=ARM_SHLDR_ELBW_HEIGHT+80, center=true, $fn=_sideRes);
-                            cylinder(r=AXLE_RAD, h=ARM_SHLDR_ELBW_HEIGHT+85, center=true, $fn=_sideRes);
+                  translate([0, 0, 26]) {
+                      difference(){
+                           union(){
+                            difference(){
+                                cylinder(r=AXLE_RAD+2, h=ARM_SHLDR_ELBW_HEIGHT+55, center=true, $fn=_sideRes);
+                                cylinder(r=AXLE_RAD, h=ARM_SHLDR_ELBW_HEIGHT+85, center=true, $fn=_sideRes);
+                            }
+                        }
+                            translate([0, 0, -26]){
+                                centralAxleStabilizer();
+                            }
+                            
+
+                            translate([0, 0, ARM_MOUNT_HEIGHT-26]){
+                                centralAxleStabilizer();
+                            }
+
+                            translate([0, 0, (ARM_MOUNT_HEIGHT*2)-26]){
+                                centralAxleStabilizer();
+                            }
                         }
                      }
                 
@@ -248,7 +302,8 @@ module innerArmSupport(){
                             cube(size=[MOUNT_OUTER_WIDTH+BEARING_HEIGHT+6.3, BEARING_OD/1.5, 8], center=true);
                         }
                          
-                         innerArmXBrace();
+                          innerArmXBrace();
+                       
 
                          translate([0, 0, ARM_MOUNT_HEIGHT]){
                            innerArmXBrace();
@@ -256,20 +311,24 @@ module innerArmSupport(){
 
                          translate([0, 0, ARM_MOUNT_HEIGHT*2]){
                            innerArmXBrace();
-                        }
-
-                          translate([0, 0, ARM_MOUNT_HEIGHT*3]){
-                           innerArmXBrace();
-                        }
-
-                        
+                        }                        
                     }
+
                     translate([0, 0, 25]) {
                          cylinder(r=AXLE_RAD, h=ARM_SHLDR_ELBW_HEIGHT+75, center=true, $fn=_sideRes);
                     }
-                    
+
+                    centralAxleStabilizer();
+
+                     translate([0, 0, ARM_MOUNT_HEIGHT]){
+                        centralAxleStabilizer();
+                    }
+
+                     translate([0, 0, ARM_MOUNT_HEIGHT*2]){
+                        centralAxleStabilizer();
+                    }
+                  
                 }
-               
             }
         }
 
@@ -282,32 +341,53 @@ module innerArmSupport(){
             difference(){
                 cylinder(r1=BEARING_OD+2, r2=BEARING_OD+9, h=15, center = true, $fn=_sideRes);
                 translate([0, 0, 6]) {
-                  difference(){
-                        cylinder(r=BEARING_OD+7,h=ARM_SHLDR_ELBW_HEIGHT-55, $fn=_sideRes);
-                        translate([0,0,-2]){
-                            cylinder(r=BEARING_OD+4.8,h=ARM_SHLDR_ELBW_HEIGHT+5, $fn=_sideRes);
-                        }
-                    }
+
                 }
+                cylinder(r=AXLE_RAD, h=ARM_SHLDR_ELBW_HEIGHT+85, center=true, $fn=_sideRes);
+                translate([0, BEARING_OD, 0]) {
+                    cylinder(r=1.65,h=60,center=true,$fn=_sideRes);
+                }
+
+                  translate([0, -BEARING_OD, 0]) {
+                    cylinder(r=1.65,h=60,center=true,$fn=_sideRes);
+                }
+                 
             }
            
         }
     }
 }
 
+module centralAxleStabilizer(){
+    rotate([45, 90, 0]){
+        union(){
+            cylinder(r=1.65,h=60,center=true,$fn=_sideRes);
+                translate([0, 0, -19]) {
+                    cylinder(r=2.5, h=5, center=true, $fn=_sideRes);
+                }
+                
+                translate([0,0,-12]) {
+                    cube([5.8,22,2.8], center=true);
+                
+                }
+            
+            }
+        }
+}
+
 module innerArmXBrace(){
     difference(){
          union(){
             rotate([0, 0, 45]) {
-                cube(size=[MOUNT_OUTER_WIDTH-36, BEARING_OD/3, 6], center=true);
+                cube(size=[MOUNT_OUTER_WIDTH-36, BEARING_OD/3, 65], center=true);
             }
 
             rotate([0, 0, -45]) {
-                cube(size=[MOUNT_OUTER_WIDTH-37, BEARING_OD/3, 6], center=true);
+                cube(size=[MOUNT_OUTER_WIDTH-36, BEARING_OD/3, 65], center=true);
             }
         }
 
-        translate([0, 0, -25]) {
+        translate([0, 0, -52]) {
                 union(){
                     difference(){
                         cylinder(r1=BEARING_OD+8,r2=(MOUNT_OUTER_WIDTH-35)/2,h=20, $fn=_sideRes);
@@ -393,6 +473,22 @@ module outerArmShell(){
             }
         }
         
+    }
+}
+
+module crossSection(thiccness){
+    rotate([0, 0, -90]) {
+        translate([-BASE_RAD*2, 0, -1]) {
+            cube([BASE_HEIGHT*4,thiccness,BASE_HEIGHT*4]);
+        }   
+    }
+}
+
+module oppositeCrossSection(thiccness){
+    rotate([0, 0, 0]) {
+        translate([-BASE_RAD*2, 0, -1]) {
+            cube([BASE_HEIGHT*4,thiccness,BASE_HEIGHT*4]);
+        }   
     }
 }
 

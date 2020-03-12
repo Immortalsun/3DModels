@@ -88,11 +88,13 @@ module main(){
     //         cylinder(r=AXLE_RAD+2.9, h=450, center=true, $fn=_sideRes);
     //     }
     //  }
-    translate([0, 0, 38.5]){ 
-        rotate([0, 0, 90]) {
-            outerArmShell();
-        }
-    }
+    // translate([0, 0, 38.5]){ 
+    //     rotate([0, 0, 90]) {
+    //         outerArmShell();
+    //     }
+    // }
+
+    motorBracket();
    
 }
 
@@ -360,6 +362,67 @@ module innerArmXBrace(){
                     }
             }
         }
+    }
+}
+
+module motorBracket(){
+    union(){
+        difference(){
+            cube([MOTOR_WIDTH,MOTOR_WIDTH+4,MOTOR_HEIGHT+1]);
+
+
+            translate([-5,-10,-.1]){
+                  cube(size=[55, 90, 11]);
+            }
+
+            translate([MOTOR_WIDTH-35,-5,MOTOR_HEIGHT/1.7]){
+                 rotate([90, 0, 0]){
+                     cylinder(r=1.7, h=50, center=true, $fn=_sideRes);
+                 } 
+            }
+
+              translate([MOTOR_WIDTH-5,-5,MOTOR_HEIGHT/1.7]){
+                 rotate([90, 0, 0]){
+                     cylinder(r=1.7, h=50, center=true, $fn=_sideRes);
+                 } 
+            }
+          
+            translate([-2, 2, -4.5]) {
+                cube([MOTOR_WIDTH+8,MOTOR_WIDTH+8,MOTOR_HEIGHT+4]);
+            }
+
+            translate([(MOTOR_WIDTH)/2, (MOTOR_WIDTH+6)/2, MOTOR_HEIGHT-5]) {
+                cylinder(r=11.35,h=25,$fn=_sideRes);
+            }
+
+            translate([MOTOR_WIDTH-6, 9, MOTOR_HEIGHT-2]) {
+                cylinder(r=MTR_SCREW_RAD, h=MTR_SCREW_HEIGHT, $fn=_sideRes);
+            }
+
+
+            translate([6, 9, MOTOR_HEIGHT-2]) {
+                cylinder(r=MTR_SCREW_RAD, h=MTR_SCREW_HEIGHT, $fn=_sideRes);
+            }
+
+            translate([6, MOTOR_WIDTH-3, MOTOR_HEIGHT-2]) {
+                cylinder(r=MTR_SCREW_RAD, h=MTR_SCREW_HEIGHT, $fn=_sideRes);
+            }
+
+            translate([MOTOR_WIDTH-6, MOTOR_WIDTH-3, MOTOR_HEIGHT-2]) {
+                cylinder(r=MTR_SCREW_RAD, h=MTR_SCREW_HEIGHT, $fn=_sideRes);
+            }
+        }
+
+        // translate([0, -MOTOR_WIDTH/2, 0]) {
+        //     difference(){
+        //         cube([MOTOR_WIDTH,MOTOR_WIDTH/2,5]);
+
+        //         translate([MOTOR_WIDTH/2, MOTOR_WIDTH/4, -2]) {
+        //             cylinder(r=1.65,h=10,$fn=_sideRes);
+        //         }                 
+        //     }
+        // }
+        
     }
 }
 

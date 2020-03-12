@@ -77,7 +77,7 @@ module lidGear(){
                 }
                 translate([0, 0, -5.2]) {
                     union(){
-                        cylinder(r=BEARING_OD/2, h=BEARING_HEIGHT+1.5, $fn=_sideRes);
+                        cylinder(r=(BEARING_OD/2)+.4, h=BEARING_HEIGHT+1.5, $fn=_sideRes);
                         translate([0, 0, 15]) {
                             cylinder(r=17.7, h=20, $fn=_sideRes);
                         }
@@ -90,12 +90,21 @@ module lidGear(){
                
             }  
             translate([0, 0, 5]) {
-                cylinder(r=17.5, h=5, $fn=_sideRes);
+                cylinder(r=17.6, h=4.8, $fn=_sideRes);
             }
 
         }
 
-         cylinder(r=2, h=15, $fn=_sideRes);
+        cylinder(r=2, h=15, $fn=_sideRes);
+
+        translate([0,24.5,0]){
+            cylinder(r=1.85, h=15, center=true, $fn=_sideRes);
+        }
+
+         translate([0,-24.5,0]){
+            cylinder(r=1.85, h=15, center=true, $fn=_sideRes);
+        }
+        
                     
     }
 }
@@ -123,7 +132,7 @@ module panelMount(){
         
 
         // radial symmetry foots
-        foot();
+        //foot();
         // rotate([0, 0, 90]) {
         //     foot();
         // }
@@ -134,12 +143,12 @@ module panelMount(){
         //     foot();
         // }
 
-        //motorMount();
+        motorMount();
         
         //bearingMount();
 
         translate([0,0,0]) {
-            // /Lid();
+            //Lid();
         }
      }
 }
@@ -161,11 +170,11 @@ module motorBracket(){
         difference(){
             cube([MOTOR_WIDTH,MOTOR_WIDTH+4,MOTOR_HEIGHT+1]);
             translate([-2, 2, -4.5]) {
-                cube([MOTOR_WIDTH+8,MOTOR_WIDTH+8,MOTOR_HEIGHT+4]);
+                cube([MOTOR_WIDTH+8,MOTOR_WIDTH+5,MOTOR_HEIGHT+4]);
             }
 
             translate([(MOTOR_WIDTH)/2, (MOTOR_WIDTH+6)/2, MOTOR_HEIGHT-5]) {
-                cylinder(r=11,h=25,$fn=_sideRes);
+                cylinder(r=11.35,h=25,$fn=_sideRes);
             }
 
             translate([MOTOR_WIDTH-6, 9, MOTOR_HEIGHT-2]) {
@@ -186,12 +195,34 @@ module motorBracket(){
             }
         }
 
+        difference(){
+                scale([2.5, 1, 1]) {
+                translate([MOTOR_WIDTH/5, 0, 25]){
+                    rotate([0, 0, 45]){
+                        cylinder(r1=MOTOR_WIDTH/4, r2=.1, h=MOTOR_WIDTH, center=true, $fn=4);
+                    } 
+                } 
+            }
+
+            translate([2,2,0]){
+                cube(MOTOR_HEIGHT);
+            }
+            translate([0,-2,MOTOR_HEIGHT+1.001]){
+                cube(MOTOR_HEIGHT);
+            }
+        }
+      
+       
+
         translate([0, -MOTOR_WIDTH/2, 0]) {
             difference(){
                 cube([MOTOR_WIDTH,MOTOR_WIDTH/2,5]);
 
-                translate([MOTOR_WIDTH/2, MOTOR_WIDTH/4, -2]) {
+                translate([MOTOR_WIDTH/2, MOTOR_WIDTH/4, -5]) {
                     cylinder(r=1.65,h=10,$fn=_sideRes);
+                    translate([0, 0, 9]) {
+                        cylinder(r=2.5, h=2, $fn = _sideRes);
+                    }
                 }
                 
 
@@ -208,7 +239,6 @@ module motorBracket(){
         }
         
     }
-    
 }
 
 module motorBracketPeg(){

@@ -37,6 +37,61 @@
 //         }
 //     }
 
+    difference(){
+        union(){
+             import("E:/Programerinos/userSave/RoboArm/drawings/GT2_3mm-24T-Gear.stl");
+
+            translate([0,0,1.75]){
+                cylinder(r=12, h=3.5, center=true ,$fn=200);
+            }
+         
+             
+        }
+         
+
+          translate([5,0,2.6]){
+            rotate([0, 90, 0]) {
+            
+                translate([0, 0, 4]){
+                      cylinder(r=1.65, h=10, center=true, $fn=200);
+                }
+
+                translate([-.25, 0, 2.5]) {
+                    cube([5.8,5.9,2.8], center=true);
+                } 
+            }
+        }
+
+         cylinder(r=5.65, h=45, center=true ,$fn=200);
+    }
+
+    // difference(){
+    //     union(){
+    //          import("E:/Programerinos/userSave/RoboArm/drawings/GT2_3mm-12T-Gear.stl");
+    //          translate([5,0,2.25]){
+    //              cube([5,7,4.5], center=true);
+    //          }
+    //     }
+         
+
+    //       translate([1.5,0,2.6]){
+    //         rotate([0, 90, 0]) {
+            
+    //             translate([.5, 0, 4]){
+    //                   cylinder(r=1.65, h=10, center=true, $fn=200);
+    //             }
+
+    //             translate([1.1, 0, 3.5]) {
+    //                 cube([5.8,5.8,2.8], center=true);
+    //             } 
+    //         }
+    //     }
+
+    //     cylinder(r=2.7, h=45, center=true ,$fn=200);
+    // }
+  
+
+
     // difference(){
     //     rotate([0, 90, 0]) {
     //            import("E:/Programerinos/userSave/RoboArm/drawings/M1-T24 Gear.stl"); //24 teeth, inner bore 8mm

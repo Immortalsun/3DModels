@@ -10,14 +10,17 @@
 //                     translate([7, 0, 5]) {
 //                         cube([7,7,5], center=true);
 //                     }
+//                 translate([-5, 0, 0]) {
+//                      import("E:/Programerinos/userSave/RoboArm/drawings/M1-T12 Gear.stl");
+//                 }
 //             }
             
 //         }
 //         translate([0, 0, -15]) {
-//             cylinder(r=2.85,h=20,$fn=100);
+//             cylinder(r=2.85,h=25,$fn=100);
 //         }
         
-//         translate([0, 0, 7.68]) {
+//         translate([0, 0, 12.68]) {
 //             cube(size=[20, 20, 10], center=true);
 //         }
 
@@ -37,39 +40,40 @@
 //         }
 //     }
 
-    difference(){
-        union(){
-             import("E:/Programerinos/userSave/RoboArm/drawings/GT2_3mm-24T-Gear.stl");
 
-            translate([0,0,1.75]){
-                cylinder(r=12, h=3.5, center=true ,$fn=200);
-            }
-         
-             
+difference(){
+    union(){
+         import("E:/Programerinos/userSave/RoboArm/drawings/GT2_3mm-24T-Gear.stl");
+
+        translate([0,0,1.75]){
+            cylinder(r=12.6, h=3.5, center=true ,$fn=200);
         }
-         
-
-          translate([5,0,2.6]){
-            rotate([0, 90, 0]) {
+        
             
-                translate([0, 0, 4]){
-                      cylinder(r=1.65, h=10, center=true, $fn=200);
-                }
-
-                translate([-.25, 0, 2.5]) {
-                    cube([5.8,5.9,2.8], center=true);
-                } 
-            }
-        }
-
-         cylinder(r=5.65, h=45, center=true ,$fn=200);
     }
+        
+
+      translate([5,0,2.6]){
+        rotate([0, 90, 0]) {
+        
+            translate([0, 0, 4]){
+                  cylinder(r=1.65, h=10, center=true, $fn=200);
+            }
+
+            translate([-.25, 0, 2.5]) {
+                cube([40,5.9,2.8], center=true);
+            } 
+        }
+    }
+
+     cylinder(r=5.65, h=45, center=true ,$fn=200);
+}
 
     // difference(){
     //     union(){
     //          import("E:/Programerinos/userSave/RoboArm/drawings/GT2_3mm-12T-Gear.stl");
-    //          translate([5,0,2.25]){
-    //              cube([5,7,4.5], center=true);
+    //          translate([6,0,2.25]){
+    //              cube([7,7,4.5], center=true);
     //          }
     //     }
          
@@ -81,8 +85,8 @@
     //                   cylinder(r=1.65, h=10, center=true, $fn=200);
     //             }
 
-    //             translate([1.1, 0, 3.5]) {
-    //                 cube([5.8,5.8,2.8], center=true);
+    //             translate([1.1, 0, 5.5]) {
+    //                 cube([8.8,5.8,2.8], center=true);
     //             } 
     //         }
     //     }

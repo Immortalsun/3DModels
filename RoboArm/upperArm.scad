@@ -65,7 +65,21 @@ module main(){
     union(){
          union(){
             importElbowJoint();
-            upperArmInternal();
+            difference(){
+                 rotate(a=90, v=[0, 0, 0]) {
+                      upperArmInternal();
+                 }
+                
+                 axle();
+            }
+
+            translate([PLTFRM_PANEL_HT-9.5,PLTFRM_PANEL_WTH-5, 5]){
+                rotate([90,0,-90]){
+                     motorStandIn();
+                }
+               
+            } 
+           
         }
 
         axle();
@@ -80,7 +94,19 @@ module importElbowJoint(){
 }
 
 module upperArmInternal(){
+    union(){
+        //outer caps axle mounts
+        bearingCap();
+        mirror([1,0,0]){
+            bearingCap();
+        }
 
+        //main
+        translate([0, PLTFRM_PANEL_WTH+10.87, (PLATFORM_HEIGHT*5)+ARM_MOUNT_HEIGHT+BEARING_HEIGHT*2.5]) {
+            cube([PLTFRM_PANEL_HT*2.4,BEARING_OD/1.5,PLTFRM_PANEL_HT/3],center=true);
+        }
+
+    }
 }
 
 module axle(){
@@ -96,8 +122,8 @@ module motorStandIn(){
         cube([MOTOR_WIDTH, MOTOR_WIDTH, MOTOR_HEIGHT]);
         translate([MOTOR_WIDTH/2, MOTOR_WIDTH/2, MOTOR_HEIGHT]) {
             cylinder(r=MOTOR_SHAFT_THRU_RADIUS, h=3, center = true, $fn=_sideRes);
-            translate([0, 0, 12]) {
-                cylinder(r=MOTOR_SHAFT_RADIUS,h=21, center=true,$fn=_sideRes);
+            translate([0, 0, 11]) {
+                cylinder(r=MOTOR_SHAFT_RADIUS,h=30, center=true,$fn=_sideRes);
             }
         }
     } 
@@ -117,5 +143,55 @@ module bearingMount(){
 module bearingInsert(){
    rotate([0, 90, 0]) {
         cylinder(r=(BEARING_OD/2)+.1,h=BEARING_HEIGHT, $fn=_sideRes);
+    }
+}
+
+module bearingCap(){
+    union(){
+        translate([MOUNT_OUTER_WIDTH-BEARING_OD-(BEARING_HEIGHT), MOUNT_OUTER_WIDTH/2.23, MOUNT_PANEL_RADIUS+BEARING_ID/1.86]) {
+            rotate([0, 90, 0]) {
+                cylinder(r=(BEARING_OD/2)+2.5,h=BEARING_HEIGHT, $fn=_sideRes);
+            }
+            bearingCapLockMount();
+            bearingCapOuterArm();
+        }
+    }
+    
+}
+
+module bearingCapOuterArm(){
+    translate([BEARING_HEIGHT/3, 0, ARM_SHLDR_ELBW_HEIGHT/6]) {
+        cube(size=[BEARING_HEIGHT/1.5, BEARING_OD/1.5 , ARM_SHLDR_ELBW_HEIGHT/6], center=true);
+    }
+}
+
+module bearingCapLockMount(){
+    translate([BEARING_HEIGHT+4.2, 0, 0]) {
+        difference(){
+             union(){
+                rotate([0, 90, 0]) {
+                    difference(){
+                        cylinder(r=15.4, h=BEARING_HEIGHT, center=true, $fn=_sideRes);
+                        translate([0, 0, 1]) {
+                            cylinder(r=12.8, h=BEARING_HEIGHT, center=true, $fn=_sideRes);
+                        }
+                    }
+                }
+            }
+            translate([0, 9, 10]) {
+                cylinder(r=1.65,h=10,center=true,$fn=_sideRes);
+                translate([0, 0, 0]){
+                    cylinder(r=2.5, h=5, $fn=_sideRes);
+                } 
+                
+            }
+            translate([0, -9, 10]) {
+                cylinder(r=1.65,h=10,center=true,$fn=_sideRes);
+                translate([0, 0, 0]){
+                    cylinder(r=2.5, h=5, $fn=_sideRes);
+                } 
+            }
+
+        }
     }
 }

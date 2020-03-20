@@ -1,0 +1,41 @@
+{
+    "parameterSets": {
+        "design default values": {
+            "ARM_SHLDR_ELBW_HEIGHT": "175",
+            "AXLE_RAD": "5.1",
+            "BEARING_HEIGHT": "9.2",
+            "BEARING_ID": "10.2",
+            "BEARING_OD": "30.2",
+            "FLANGE_HEIGHT": "20",
+            "FLANGE_LENGTH": "10",
+            "LID_HEIGHT": "4",
+            "LID_RAD": "69",
+            "MOTOR_HEIGHT": "34",
+            "MOTOR_SHAFT_RADIUS": "2.5",
+            "MOTOR_SHAFT_THRU_RADIUS": "11",
+            "MOTOR_WIDTH": "42.3",
+            "MOUNT_OUTER_WIDTH": "80",
+            "MOUNT_PANEL_RADIUS": "50",
+            "MOUNT_WALL_THICKNESS": "19.95",
+            "MTR_SCREW_COUNTERSINK_HEIGHT": "2",
+            "MTR_SCREW_COUNTERSINK_RAD": "2.7",
+            "MTR_SCREW_HEIGHT": "5.3",
+            "MTR_SCREW_RAD": "1.45",
+            "PLATFORM_HEIGHT": "5",
+            "PLTFRM_PANEL_HT": "39",
+            "PLTFRM_PANEL_THICKNESS": "5",
+            "PLTFRM_PANEL_WTH": "25",
+            "ROUTE_DEPTH": "10",
+            "ROUTE_HT": "4.4",
+            "ROUTE_WTH": "28",
+            "SHELL_THICKNESS": "3.5",
+            "SUPPORT_HEIGHT": "75",
+            "UPPER_ARM_BRACE_HT": "20",
+            "UPPER_ARM_BRACE_THIC": "20.13",
+            "UPPER_ARM_BRACE_WIDTH": "93.6",
+            "UPPER_ARM_LENGTH": "175",
+            "_sideRes": "300"
+        }
+    },
+    "fileFormatVersion": "1"
+}

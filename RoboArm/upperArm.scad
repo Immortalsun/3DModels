@@ -47,8 +47,14 @@ SHELL_THICKNESS = 3.5;//mm
 //Elbow Platform
 PLATFORM_HEIGHT = 5;//mm
 PLTFRM_PANEL_THICKNESS = 5;//mm
-PLTFRM_PANEL_HT = MOTOR_HEIGHT+PLATFORM_HEIGHT;
+PLTFRM_PANEL_HT = 39;//mm
 PLTFRM_PANEL_WTH = 25;//mm
+
+//Upper Arm
+UPPER_ARM_LENGTH = 175;//mm
+UPPER_ARM_BRACE_WIDTH = 93.6;//mm
+UPPER_ARM_BRACE_THIC = 20.13;//mm
+UPPER_ARM_BRACE_HT = 20;//mm
 
 //Wire route hole
 ROUTE_HT = 4.4;//mm
@@ -95,17 +101,125 @@ module importElbowJoint(){
 
 module upperArmInternal(){
     union(){
+
+        braceZTrans = (PLATFORM_HEIGHT*5)+ARM_MOUNT_HEIGHT+BEARING_HEIGHT*2.5;
+        braceYTrans = PLTFRM_PANEL_WTH+10.87;
+        axleShaftYTans = -MOUNT_PANEL_RADIUS+UPPER_ARM_BRACE_THIC;
+        axleShaftZTrans = braceZTrans+(UPPER_ARM_LENGTH/3)+5;
+
         //outer caps axle mounts
         bearingCap();
         mirror([1,0,0]){
             bearingCap();
         }
 
-        //main
-        translate([0, PLTFRM_PANEL_WTH+10.87, (PLATFORM_HEIGHT*5)+ARM_MOUNT_HEIGHT+BEARING_HEIGHT*2.5]) {
-            cube([PLTFRM_PANEL_HT*2.4,BEARING_OD/1.5,PLTFRM_PANEL_HT/3],center=true);
+        //main brace
+        translate([0, braceYTrans, braceZTrans]) {
+            difference(){
+                cube([UPPER_ARM_BRACE_WIDTH,UPPER_ARM_BRACE_THIC,UPPER_ARM_BRACE_HT],center=true);
+                //subtract axle
+                translate([0, axleShaftYTans-braceYTrans, (UPPER_ARM_LENGTH/3)+5]) {
+                    rotate([45, 0, 0]) {
+                        cylinder(r=AXLE_RAD, h = UPPER_ARM_LENGTH+2, center=true, $fn=_sideRes);
+                    }
+                }
+            }
         }
 
+        //central axis mount
+        translate([0,axleShaftYTans,axleShaftZTrans]){
+            upperArmAxleShaft();
+        }
+
+        //sleeve attachment point
+        translate([0, braceYTrans+1, braceZTrans-UPPER_ARM_BRACE_HT/1.6]){
+            upperArmSleeveMount();
+        } 
+
+        //wrist attachment mount
+        translate([0, axleShaftYTans-AXLE_HEIGHT/2, axleShaftZTrans+AXLE_HEIGHT/2]){
+            upperArmWristMount();
+        } 
+
+    }
+}
+
+module upperArmSleeveMount(){
+    union(){
+        cylinder(r=25, h=5, center=true, $fn=_sideRes);
+        translate([0, 0, 16]){
+            difference(){
+                cylinder(r1=22.5, r2=25.5, h=32, center=true, $fn=_sideRes);
+
+                translate([0, -10.2, 12]) {
+                     rotate([-45,0,0]){
+                        cube([51,35,55],center=true);
+                    }
+                }
+                
+                translate([0, -8.7, 0]) {
+                    rotate([45, 0, 0]) {
+                        difference(){
+                            cylinder(r=(UPPER_ARM_BRACE_WIDTH/3.5)+10, h=40, center=true, $fn=_sideRes);
+                            translate([0, 0, -1]) {
+                                cylinder(r=(UPPER_ARM_BRACE_WIDTH/3.5)+.25, h=45, center=true, $fn=_sideRes);
+                            }
+                        }
+                    }
+                }
+            }
+              
+        } 
+      
+    }
+}
+
+module upperArmWristMount(){
+    //cube([UPPER_ARM_BRACE_WIDTH,UPPER_ARM_BRACE_THIC,UPPER_ARM_BRACE_HT],center=true);
+}
+
+module upperArmAxleShaft(){
+    shaftThiccness = 2.5;//mm
+    flangeDepth = 10;
+    rotate([45,0,0]){
+        //axle shaft
+        difference(){
+            union(){
+                cylinder(r=AXLE_RAD+shaftThiccness, h = UPPER_ARM_LENGTH, center=true, $fn=_sideRes);
+                 //support Flange
+                
+                 supportFlangeZTrans = (-UPPER_ARM_LENGTH/2)+flangeDepth;
+                 difference(){  
+                     axleShaftSupportFlange();
+                     //bottom flange trim
+                     translate([0,16,supportFlangeZTrans-(UPPER_ARM_LENGTH/8.2)]) {
+                         cube([50,40,15],center=true);
+                     }
+
+                     translate([0,-16,supportFlangeZTrans-(UPPER_ARM_LENGTH/8.41)]) {
+                         rotate([-45, 0, 0]){
+                             cube([50,40,15],center=true);
+                         } 
+                     }
+                 }
+
+                mirror([0,0,1]){
+                    difference(){
+                        //top flange trim
+                         axleShaftSupportFlange();
+                    }
+                }
+            }
+            cylinder(r=AXLE_RAD, h = UPPER_ARM_LENGTH+12, center=true, $fn=_sideRes);
+        }
+        
+    }
+}
+
+module axleShaftSupportFlange(){
+    flangeDepth = 10;
+    translate([0, 0, (-UPPER_ARM_LENGTH/2)+flangeDepth])  {
+        cylinder(r1=UPPER_ARM_BRACE_WIDTH/3.5, r2 =2,  h=UPPER_ARM_BRACE_HT+10, center=true, $fn=_sideRes);
     }
 }
 

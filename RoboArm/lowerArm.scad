@@ -66,35 +66,35 @@ main();
 module main(){
     //import shoulder and connected frame
     //internalArmFrame();
-    // difference(){
-    //      union(){
-    //         translate([0, 0, ARM_SHLDR_ELBW_HEIGHT+PLATFORM_HEIGHT+29.5]) {
-    //             elbowPlatform();
-    //             elbowMountHousingMain();
-    //         }
-    //     }
-    //     translate([0,0,206.5]){
-    //         rotate([0, 0, 90]) {
-    //             mirror([0,0,1]){
-    //                 footMountingScrewHole();
+    difference(){
+         union(){
+            translate([0, 0, ARM_SHLDR_ELBW_HEIGHT+PLATFORM_HEIGHT+29.5]) {
+                elbowPlatform();
+                elbowMountHousingMain();
+            }
+        }
+        translate([0,0,206.5]){
+            rotate([0, 0, 90]) {
+                mirror([0,0,1]){
+                    footMountingScrewHole();
 
-    //                 mirror([1, 0, 0]) {
-    //                     footMountingScrewHole();
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     translate([0, 0, 8]) {
-    //         cylinder(r=AXLE_RAD+2.9, h=450, center=true, $fn=_sideRes);
-    //     }
-    //  }
-    // translate([0, 0, 38.5]){ 
-    //     rotate([0, 0, 90]) {
-    //         outerArmShell();
-    //     }
-    // }
+                    mirror([1, 0, 0]) {
+                        footMountingScrewHole();
+                    }
+                }
+            }
+        }
+        translate([0, 0, 8]) {
+            cylinder(r=AXLE_RAD+.1, h=450, center=true, $fn=_sideRes);
+        }
+     }
+    translate([0, 0, 38.5]){ 
+        rotate([0, 0, 90]) {
+            //outerArmShell();
+        }
+    }
 
-    motorBracket();
+    //motorBracket();
    
 }
 
@@ -167,7 +167,11 @@ module elbowPlatform(){
     union(){
         difference(){
             cylinder(r=OUTER_SHELL_RAD+SHELL_THICKNESS+2, h=PLATFORM_HEIGHT,center = true ,$fn=_sideRes);
-            cylinder(r=AXLE_RAD+.5, h=PLATFORM_HEIGHT+5,center=true,$fn=_sideRes);
+            cylinder(r=AXLE_RAD+.2, h=PLATFORM_HEIGHT+5,center=true,$fn=_sideRes);
+
+             translate([0, 0, (-ARM_SHLDR_ELBW_HEIGHT/6)-2.6]){
+                innerArmXBrace();
+            }     
         }
 
         //motor stand-in 
@@ -175,7 +179,9 @@ module elbowPlatform(){
         //     rotate([-90, 0, 90]) {
         //         motorStandIn();
         //     }
-        // }       
+        // }
+
+          
     }
 }
 
@@ -327,30 +333,52 @@ module bearingInsert(){
     }
 }
 
-module innerArmXBrace(){
+module innerArmXBrace(snapRadius = 3.25){
     difference(){
          union(){
             rotate([0, 0, 45]) {
-                cube(size=[MOUNT_OUTER_WIDTH-36, BEARING_OD/3, 65], center=true);
+                cube(size=[MOUNT_OUTER_WIDTH-36, BEARING_OD/3, ARM_SHLDR_ELBW_HEIGHT/3], center=true);
             }
 
             rotate([0, 0, -45]) {
-                cube(size=[MOUNT_OUTER_WIDTH-36, BEARING_OD/3, 65], center=true);
+                cube(size=[MOUNT_OUTER_WIDTH-36, BEARING_OD/3, ARM_SHLDR_ELBW_HEIGHT/3], center=true);
+            }
+
+            translate([10, 10, 3]) {
+                cylinder(r=3.2, h=(ARM_SHLDR_ELBW_HEIGHT/3)+5, center=true, $fn=_sideRes);
+            }
+
+             translate([-10, 10, 3]) {
+                cylinder(r=3.2, h=(ARM_SHLDR_ELBW_HEIGHT/3)+5, center=true, $fn=_sideRes);
+            }
+
+             translate([-10, -10, 3]) {
+                cylinder(r=3.2, h=(ARM_SHLDR_ELBW_HEIGHT/3)+5, center=true, $fn=_sideRes);
+            }
+
+             translate([10, -10, 3]) {
+                cylinder(r=3.2, h=(ARM_SHLDR_ELBW_HEIGHT/3)+5, center=true, $fn=_sideRes);
             }
         }
 
+          translate([10, 10, -27.75]) {
+                cylinder(r=snapRadius, h=3, center=true, $fn=_sideRes);
+            }
+
+             translate([-10, 10, -27.75]) {
+                cylinder(r=snapRadius, h=3, center=true, $fn=_sideRes);
+            }
+
+             translate([-10, -10, -27.75]) {
+                cylinder(r=snapRadius, h=3, center=true, $fn=_sideRes);
+            }
+
+             translate([10, -10, -27.75]) {
+                cylinder(r=snapRadius, h=3, center=true, $fn=_sideRes);
+            }
+
         translate([0, 0, -52]) {
                 union(){
-                    difference(){
-                        cylinder(r1=BEARING_OD+8,r2=(MOUNT_OUTER_WIDTH-35)/2,h=20, $fn=_sideRes);
-                        translate([0,0,-2]){
-                            cylinder(r1=BEARING_OD+6, r2=(MOUNT_OUTER_WIDTH-33)/2,h=20, $fn=_sideRes);
-                        }
-                        translate([0,0,16]){
-                            cylinder(r=(MOUNT_OUTER_WIDTH-38)/2,h=20, $fn=_sideRes);
-                        } 
-                    }
-
                     translate([0, 0,18]) {
                         difference(){
                             cylinder(r=(MOUNT_OUTER_WIDTH-34)/2,h=ARM_SHLDR_ELBW_HEIGHT, $fn=_sideRes);

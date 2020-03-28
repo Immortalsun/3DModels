@@ -41,33 +41,33 @@
 //     }
 
 
-difference(){
-    union(){
-         import("E:/Programerinos/userSave/RoboArm/drawings/GT2_3mm-24T-Gear.stl");
+// difference(){
+//     union(){
+//          import("E:/Programerinos/userSave/RoboArm/drawings/GT2_3mm-24T-Gear.stl");
 
-        translate([0,0,1.75]){
-            cylinder(r=12.6, h=3.5, center=true ,$fn=200);
-        }
+//         translate([0,0,1.75]){
+//             cylinder(r=12.6, h=3.5, center=true ,$fn=200);
+//         }
         
             
-    }
+//     }
         
 
-      translate([5,0,2.6]){
-        rotate([0, 90, 0]) {
+//       translate([5,0,2.6]){
+//         rotate([0, 90, 0]) {
         
-            translate([0, 0, 4]){
-                  cylinder(r=1.65, h=10, center=true, $fn=200);
-            }
+//             translate([0, 0, 4]){
+//                   cylinder(r=1.65, h=10, center=true, $fn=200);
+//             }
 
-            translate([-.25, 0, 2.5]) {
-                cube([40,5.9,2.8], center=true);
-            } 
-        }
-    }
+//             translate([-.25, 0, 2.5]) {
+//                 cube([40,5.9,2.8], center=true);
+//             } 
+//         }
+//     }
 
-     cylinder(r=5.65, h=45, center=true ,$fn=200);
-}
+//      cylinder(r=5.65, h=45, center=true ,$fn=200);
+// }
 
     // difference(){
     //     union(){

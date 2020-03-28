@@ -77,7 +77,7 @@ module lidGear(){
                 }
                 translate([0, 0, -5.2]) {
                     union(){
-                        cylinder(r=(BEARING_OD/2)+.4, h=BEARING_HEIGHT+1.5, $fn=_sideRes);
+                        cylinder(r=(BEARING_OD/2)+.2, h=BEARING_HEIGHT+1.5, $fn=_sideRes);
                         translate([0, 0, 15]) {
                             cylinder(r=17.7, h=20, $fn=_sideRes);
                         }
@@ -90,7 +90,7 @@ module lidGear(){
                
             }  
             translate([0, 0, 5]) {
-                cylinder(r=17.6, h=4.8, $fn=_sideRes);
+                cylinder(r=17.6, h=4.6, $fn=_sideRes);
             }
 
         }
@@ -166,21 +166,26 @@ module motorMountPeg(){
 }
 
 module motorBracket(){
-    extensionOffset = 5;
+    extensionOffset = 0;
     union(){
         difference(){
-            translate([0, 0, 0]) {
-                cube([MOTOR_WIDTH,MOTOR_WIDTH+5,MOTOR_HEIGHT+1]);
+            translate([-6, 0, 0]) {
+                difference(){
+                    cube([MOTOR_WIDTH+4,MOTOR_WIDTH+4,MOTOR_HEIGHT+1]);
+                    translate([0, (MOTOR_WIDTH+4)/2, 4.8]) {
+                        cube(size=[15, 10, 10], center=true);
+                    }
+                }
             }
-            translate([-1, 2, -4.5]) {
-                cube([MOTOR_WIDTH+2,MOTOR_WIDTH+4,MOTOR_HEIGHT+4]);
+            translate([0, 2, -4.5]) {
+                cube([MOTOR_WIDTH+1,MOTOR_WIDTH+4,MOTOR_HEIGHT+4]);
             }
 
             translate([(MOTOR_WIDTH)/2, ((MOTOR_WIDTH+6)/2)+extensionOffset, MOTOR_HEIGHT-5]) {
                 cylinder(r=11.35,h=25,$fn=_sideRes);
             }
 
-            translate([MOTOR_WIDTH-6, 9+extensionOffset, MOTOR_HEIGHT-2]) {
+            translate([MOTOR_WIDTH-5.8, 9+extensionOffset, MOTOR_HEIGHT-2]) {
                 cylinder(r=MTR_SCREW_RAD, h=MTR_SCREW_HEIGHT, $fn=_sideRes);
             }
 
@@ -193,18 +198,18 @@ module motorBracket(){
                 cylinder(r=MTR_SCREW_RAD, h=MTR_SCREW_HEIGHT, $fn=_sideRes);
             }
 
-            translate([MOTOR_WIDTH-6, (MOTOR_WIDTH-3)+extensionOffset, MOTOR_HEIGHT-2]) {
+            translate([MOTOR_WIDTH-5.8, (MOTOR_WIDTH-3)+extensionOffset, MOTOR_HEIGHT-2]) {
                 cylinder(r=MTR_SCREW_RAD, h=MTR_SCREW_HEIGHT, $fn=_sideRes);
             }
 
-            //  translate([MOTOR_WIDTH+17, (MOTOR_WIDTH)+3+(-MOTOR_WIDTH/2), -3]) {
-            //         difference(){
-            //             cylinder(r=BASE_RAD+5,h=BASE_HEIGHT, $fn=_sideRes);
-            //             translate([0, 0, _hollowLengthOffset-3]) {
-            //                 cylinder(r=BASE_RAD-(BASE_THICKNESS), h=BASE_HEIGHT+_hollowLengthOffset, $fn=_sideRes);
-            //             }
-            //         }
-            //     }
+             translate([MOTOR_WIDTH+17, (MOTOR_WIDTH)+3+(-MOTOR_WIDTH/2), -3]) {
+                    difference(){
+                        cylinder(r=BASE_RAD+5,h=BASE_HEIGHT, $fn=_sideRes);
+                        translate([0, 0, _hollowLengthOffset-3]) {
+                            cylinder(r=BASE_RAD-(BASE_THICKNESS), h=BASE_HEIGHT+_hollowLengthOffset, $fn=_sideRes);
+                        }
+                    }
+                }
         }
 
         difference(){
@@ -226,29 +231,29 @@ module motorBracket(){
       
        
 
-        translate([0, (-MOTOR_WIDTH/2)-20, 0]) {
+        translate([0, (-MOTOR_WIDTH/2), 0]) {
             difference(){
                 union(){
-                    translate([0, 0, 0]) {
-                        cube([MOTOR_WIDTH,(MOTOR_WIDTH/2)+20,5]);
+                    translate([-2, 0, 0]) {
+                        cube([MOTOR_WIDTH,(MOTOR_WIDTH/2),5]);
                     }
-                    translate([MOTOR_WIDTH/2, 4, 11.575]){
-                        rotate([90, 30, 0]) {
-                            cylinder(r=(MOTOR_WIDTH/2)+2, h=8, center=true, $fn=3);
-                        }
-                    } 
+                    // translate([MOTOR_WIDTH/2, 4, 11.575]){
+                    //     rotate([90, 30, 0]) {
+                    //         cylinder(r=(MOTOR_WIDTH/2)+2, h=8, center=true, $fn=3);
+                    //     }
+                    // } 
                    
                 }
                 
 
-                translate([MOTOR_WIDTH/1.35, MOTOR_WIDTH/2, -5]) {
+                translate([MOTOR_WIDTH/1.35, MOTOR_WIDTH/4, -5]) {
                     cylinder(r=1.65,h=10,$fn=_sideRes);
                     translate([0, 0, 9]) {
                         cylinder(r=2.5, h=2, $fn = _sideRes);
                     }
                 }
 
-                translate([MOTOR_WIDTH/3, MOTOR_WIDTH/2, -5]) {
+                translate([MOTOR_WIDTH/3, MOTOR_WIDTH/4, -5]) {
                     cylinder(r=1.65,h=10,$fn=_sideRes);
                     translate([0, 0, 9]) {
                         cylinder(r=2.5, h=2, $fn = _sideRes);

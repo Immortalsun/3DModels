@@ -151,8 +151,8 @@ module footMountingScrewHole(){
      translate([BEARING_OD+2, 0, -10]) {
             cylinder(r=1.65,h=35,$fn=_sideRes);
 
-            translate([0, 0, 17]){
-                cylinder(r=2.5, h=14, $fn=_sideRes);
+            translate([0, 0, 20]){
+                cylinder(r=2.5, h=19, $fn=_sideRes);
             } 
 
             // //nut slot
@@ -174,6 +174,18 @@ module elbowPlatform(){
             }     
         }
 
+        //base support ring
+        supportRingHeight = 8.75;
+        supportRingThickness = 10;
+        translate([0, 0, (-supportRingHeight/2)-2.6]) {
+            difference(){
+                cylinder(r=OUTER_SHELL_RAD, h=supportRingHeight, center=true, $fn=_sideRes);
+                translate([0, 0, -.1]){
+                    cylinder(r=OUTER_SHELL_RAD-supportRingThickness, h=supportRingHeight+5, center=true, $fn=_sideRes);
+                } 
+            }
+        }
+        
         //motor stand-in 
         // translate([MOTOR_HEIGHT/1.2, 0-LID_RAD/3, MOTOR_WIDTH]) {
         //     rotate([-90, 0, 90]) {

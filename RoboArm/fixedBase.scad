@@ -101,12 +101,12 @@ module Lid(){
         
 
         translate([0, 0, -3]) {
-           // keyedLidBracket();
+           //keyedLidBracket();
         }
 
         translate([0, 0, -10]){
             rotate([0, 90, 0]){
-                //bearingCapLockMount();
+                axleFlangeMount();
             } 
         } 
 
@@ -188,7 +188,7 @@ module panelMount(){
         
 
         // radial symmetry foots
-        //foot();
+        foot();
         // rotate([0, 0, 90]) {
         //     foot();
         // }
@@ -201,10 +201,10 @@ module panelMount(){
 
         //motorMount();
         
-        bearingMount();
+        //bearingMount();
 
         translate([0,0,3]) {
-            Lid();
+            //Lid();
         }
      }
 }
@@ -502,37 +502,55 @@ module boltAndCaptiveNut(nutlength = 25, headlength = 5, boltLength = 30){
 }
 
 
-module bearingCapLockMount(){
+module axleFlangeMount(){
      difference(){
         union(){
-            rotate([0, 90, 0]) {
-                difference(){
-                    cylinder(r=15.4, h=BEARING_HEIGHT, center=true, $fn=_sideRes);
-                    translate([0, 0, 1]) {
-                        cylinder(r=12.8, h=BEARING_HEIGHT, center=true, $fn=_sideRes);
+            translate([-2.9, 0, 0]) {
+                 rotate([0, 90, 0]) {
+                    difference(){
+                        cylinder(r=17.5, h=3, center=true, $fn=_sideRes);
+                        translate([0, 0, 1]) {
+                            cylinder(r=16.2, h=BEARING_HEIGHT, center=true, $fn=_sideRes);
+                        }
                     }
                 }
             }
-
-            translate([-6.8, 0, 0]) {
-                cube([7,35,35], center=true);
+          
+            translate([-6.5, 0, 0]) {
+                cube([4.5,35,35], center=true);
             }
         }
-        translate([0, 10, 10]) {
-            cylinder(r=1.65,h=55,center=true,$fn=_sideRes);
-            translate([0, 0, .5]) {
-                  cylinder(r=2.5, h=5, $fn=_sideRes);
-            }
+
+         
+
+           translate([-14, 12, 0]){
+               rotate([0, 90, 0]) {
+                     boltAndCaptiveNut(38,5,30);
+               }
+           }
+
+            translate([-14, -12, 0]){
+               rotate([0, 90, 0]) {
+                     boltAndCaptiveNut(38,5,30);
+               }
+           }     
+
            
-            
-        }
-        translate([0, -10, 10]) {
-            cylinder(r=1.65,h=55,center=true,$fn=_sideRes);
-            translate([0, 0, .5]) {
-                cylinder(r=2.5, h=5, $fn=_sideRes);
-            }
-        }
+            translate([-14, 0, 12]){
+               rotate([0, 90, 0]) {
+                     boltAndCaptiveNut(38,5,30);
+               }
+           }    
 
+           
+            translate([-14, 0, -12]){
+               rotate([0, 90, 0]) {
+                     boltAndCaptiveNut(38,5,30);
+               }
+           }       
+           
+
+       
         rotate([0, 90, 0]) {
              cylinder(r=AXLE_RAD+.2, h=35, center=true, $fn=_sideRes);
         }
@@ -575,9 +593,9 @@ module foot(){
                 }
 
                 //extension for modified height
-                translate([0, 0, -5]) {
+                translate([0, 0, -6]) {
                     difference(){
-                        cube(size=[FOOT_LENGTH, FOOT_WIDTH, 5]);
+                        cube(size=[FOOT_LENGTH, FOOT_WIDTH, 6]);
                          translate([FOOT_LENGTH-5, FOOT_WIDTH/2, -FOOT_HEIGHT+_hollowLengthOffset]) {
                             cylinder(r=FOOT_SCREWHOLE_RAD, h=FOOT_HEIGHT+_hollowLengthOffset, $fn=_sideRes);
                         }

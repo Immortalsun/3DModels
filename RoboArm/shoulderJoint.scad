@@ -36,6 +36,12 @@ MOUNT_OUTER_WIDTH = 80;//mm
 MOUNT_WALL_THICKNESS = 19.95;
 MOUNT_PANEL_RADIUS = 50; 
 
+//Upper Arm
+UPPER_ARM_LENGTH = 175;//mm
+UPPER_ARM_BRACE_WIDTH = 135;//mm
+UPPER_ARM_BRACE_THIC = 20.13;//mm
+UPPER_ARM_BRACE_HT = 20;//mm
+
 //Shoulder Axle params
 AXLE_RAD = 5.25;//mm
 AXLE_HEIGHT = MOUNT_OUTER_WIDTH+(BEARING_HEIGHT*14);
@@ -219,9 +225,7 @@ module bearingInsert(){
 module bearingCap(){
     union(){
         translate([MOUNT_OUTER_WIDTH-BEARING_OD-(BEARING_HEIGHT)+1, 0, MOUNT_PANEL_RADIUS+BEARING_ID/1.2]) {
-            rotate([0, 90, 0]) {
-                cylinder(r=(BEARING_OD/2)+2.5,h=BEARING_HEIGHT, $fn=_sideRes);
-            }
+
             bearingCapLockMount();
             bearingCapOuterArm();
         }
@@ -230,11 +234,10 @@ module bearingCap(){
 }
 
 module bearingCapOuterArm(){
-    translate([BEARING_HEIGHT/2.4, 0, ARM_SHLDR_ELBW_HEIGHT/6]) {
+    translate([BEARING_HEIGHT/2.4, 0, ARM_SHLDR_ELBW_HEIGHT/7]) {
         difference(){
-
              union(){
-                cube(size=[BEARING_HEIGHT/1.2, BEARING_OD/1.5 , ARM_SHLDR_ELBW_HEIGHT/6], center=true);
+                cube(size=[BEARING_HEIGHT/1.2, BEARING_OD/1.5 , ARM_SHLDR_ELBW_HEIGHT/8], center=true);
             
                 translate([0,0,12]){
                     rotate([90, 90, 0]){
@@ -259,39 +262,68 @@ module bearingCapOuterArm(){
 }
 
 module bearingCapLockMount(){
-    translate([BEARING_HEIGHT+4.2, 0, 0]) {
-        difference(){
-             union(){
-                rotate([0, 90, 0]) {
-                    difference(){
-                        cylinder(r=15.4, h=BEARING_HEIGHT, center=true, $fn=_sideRes);
-                        translate([0, 0, 1]) {
-                            cylinder(r=12.8, h=BEARING_HEIGHT, center=true, $fn=_sideRes);
-                        }
-                    }
-                }
-            }
-            translate([0, 9, 10]) {
-                cylinder(r=1.65,h=10,center=true,$fn=_sideRes);
-                translate([0, 0, 0]){
-                    cylinder(r=2.5, h=5, $fn=_sideRes);
-                } 
-                
-            }
-            translate([0, -9, 10]) {
-                cylinder(r=1.65,h=10,center=true,$fn=_sideRes);
-                translate([0, 0, 0]){
-                    cylinder(r=2.5, h=5, $fn=_sideRes);
-                } 
-            }
-
+    translate([BEARING_HEIGHT+3, 0, 0]) {
+        rotate([45, 0, 0]) {
+              axleFlangeMount();
         }
     }
 }
 
-module bearingCapLimitExtentsion(){
-  
+module axleFlangeMount(){
+     difference(){
+        union(){
+            translate([-3.3, 0, 0]) {
+                 rotate([0, 90, 0]) {
+                    difference(){
+                        cylinder(r=17.5, h=3, center=true, $fn=_sideRes);
+                        translate([0, 0, 1]) {
+                            cylinder(r=16.2, h=BEARING_HEIGHT, center=true, $fn=_sideRes);
+                        }
+                    }
+                }
+            }
+          
+            translate([-8.29, 0, 0]) {
+                cube([BEARING_HEIGHT/1.2,35,35], center=true);
+            }
+        }
+
+         
+
+           translate([-16, 12, 0]){
+               rotate([0, 90, 0]) {
+                     boltAndCaptiveNut(38,5,30);
+               }
+           }
+
+            translate([-16, -12, 0]){
+               rotate([0, 90, 0]) {
+                     boltAndCaptiveNut(38,5,30);
+               }
+           }     
+
+           
+            translate([-16, 0, 12]){
+               rotate([0, 90, 0]) {
+                     boltAndCaptiveNut(38,5,30);
+               }
+           }    
+
+           
+            translate([-16, 0, -12]){
+               rotate([0, 90, 0]) {
+                     boltAndCaptiveNut(38,5,30);
+               }
+           }       
+           
+
+       
+        rotate([0, 90, 0]) {
+             cylinder(r=AXLE_RAD+.2, h=35, center=true, $fn=_sideRes);
+        }
+    }
 }
+
 
 module mainLowerArm(){
     innerArmSupport();
@@ -310,42 +342,9 @@ module innerArmSupport(){
                     braceWidth = MOUNT_OUTER_WIDTH+(BEARING_HEIGHT*3.5);
                     union(){
                         translate([0, 0, -ARM_SHLDR_ELBW_HEIGHT/4]) {
-                            // difference(){
-                            //     //cross brace
-                            //     cube(size=[braceWidth, BEARING_OD/1.2, 8], center=true);
-                            //     //leg Mounts
-                            //     translate([50, 0, -3]) {
-                            //         boltAndCaptiveNut(55,0,15);
-                            //     }
-                            //     translate([40, 0, -3]) {
-                            //          boltAndCaptiveNut(55,0,15);
-                            //     }
-                            //     mirror([1,0,0]){
-                            //         translate([50, 0, -3]) {
-                            //             boltAndCaptiveNut(55,0,15);
-                            //         }
-                            //         translate([40, 0, -3]) {
-                            //             boltAndCaptiveNut(55,0,15);
-                            //         }
-                            //     }
-                            //     //end leg mounts
-                            // }
-
-                            
-                        }
-
-                          
-                          translate([0, 0, -4]) {
-                               innerArmXBrace();
-                          }
-
-                        //   translate([0, 0, (ARM_SHLDR_ELBW_HEIGHT/3)-3]) {
-                        //        innerArmXBrace();
-                        //   }
-
-                        //    translate([0, 0, ((ARM_SHLDR_ELBW_HEIGHT/3)*2)-4]) {
-                        //        innerArmXBrace();
-                        //   }         
+                                 crossBrace();
+                        }       
+                       
                     }
 
                     translate([0, 0, 25]) {
@@ -373,50 +372,93 @@ module innerArmSupport(){
         }
 
         // //outer shell attachment
-        // translate([0, 0, 110.5]) {
-        //     difference(){
-        //         cylinder(r1=BEARING_OD+2, r2=BEARING_OD+8.5, h=15, center = true, $fn=_sideRes);
+        translate([0, 0, 110.5]) {
+            difference(){
+                cylinder(r1=BEARING_OD+2, r2=BEARING_OD+8.5, h=15, center = true, $fn=_sideRes);
                
-        //        translate([0, 0,ARM_SHLDR_ELBW_HEIGHT/1.95]) {
-        //             cylinder(r=AXLE_RAD, h=ARM_SHLDR_ELBW_HEIGHT, center=true, $fn=_sideRes);
-        //        }
+               translate([0, 0,ARM_SHLDR_ELBW_HEIGHT/1.95]) {
+                    cylinder(r=AXLE_RAD, h=ARM_SHLDR_ELBW_HEIGHT, center=true, $fn=_sideRes);
+               }
                
 
-        //         translate([0, BEARING_OD+2, 0]) {
-        //             cylinder(r=1.65,h=60,center=true,$fn=_sideRes);
-        //                translate([0, 0, -14]) {
-        //                 cylinder(r=2.7, h=14, $fn=_sideRes);
-        //             }
-        //         }
+                translate([0, BEARING_OD+2, 0]) {
+                    cylinder(r=1.65,h=60,center=true,$fn=_sideRes);
+                       translate([0, 0, -14]) {
+                        cylinder(r=2.7, h=14, $fn=_sideRes);
+                    }
+                }
                 
 
-        //         translate([0, -BEARING_OD-2, 0]) {
-        //             cylinder(r=1.65,h=60,center=true,$fn=_sideRes);
-        //              translate([0, 0, -14]) {
-        //                 cylinder(r=2.7, h=14, $fn=_sideRes);
-        //             }
-        //         }
+                translate([0, -BEARING_OD-2, 0]) {
+                    cylinder(r=1.65,h=60,center=true,$fn=_sideRes);
+                     translate([0, 0, -14]) {
+                        cylinder(r=2.7, h=14, $fn=_sideRes);
+                    }
+                }
 
 
-        //          translate([-BEARING_OD-8, 0, 0]) {
-        //             cylinder(r=3,h=60,center=true,$fn=_sideRes);
-        //         }
+                 translate([-BEARING_OD-8, 0, 0]) {
+                    cylinder(r=3,h=60,center=true,$fn=_sideRes);
+                }
 
-        //          translate([BEARING_OD+8, 0, 0]) {
-        //             cylinder(r=3,h=60,center=true,$fn=_sideRes);
-        //         }
-        //     }
+                 translate([BEARING_OD+8, 0, 0]) {
+                    cylinder(r=3,h=60,center=true,$fn=_sideRes);
+                }
+            }
 
-        //      translate([0,0,(-ARM_SHLDR_ELBW_HEIGHT/8)+.2]){
-        //         difference(){
-        //             innerArmXBrace(0);
-        //             translate([0, 0, -10.8]) {
-        //                 cube(50,center=true);
-        //             }
-        //         }    
-        //     }
+             translate([0,0,(-ARM_SHLDR_ELBW_HEIGHT/8)+.2]){
+                difference(){
+                    innerArmXBrace(0);
+                    translate([0, 0, -10.8]) {
+                        cube(50,center=true);
+                    }
+                }    
+            }
            
-        // }
+        }
+    }
+}
+
+module crossBrace(){
+     union(){
+        union(){
+            difference(){
+                    cube(size=[UPPER_ARM_BRACE_WIDTH, UPPER_ARM_BRACE_THIC, 8], center=true);
+
+                translate([0, 0, 2]) {
+                    cylinder(r=AXLE_RAD, h=5, center=true, $fn=_sideRes);
+                }
+
+                    translate([(UPPER_ARM_BRACE_WIDTH/2)-16.5,0,-6.2]){
+                    boltAndCaptiveNut(25,7,25);
+                    }
+
+                    translate([(UPPER_ARM_BRACE_WIDTH/2)-27.5,0,-6]){
+                    boltAndCaptiveNut(25,7,25);
+                    }
+
+                    mirror([1,0,0]){
+                        translate([(UPPER_ARM_BRACE_WIDTH/2)-16.5,0,-6.2]){
+                        boltAndCaptiveNut(25,7,25);
+                    }
+
+                    translate([(UPPER_ARM_BRACE_WIDTH/2)-27.5,0,-6]){
+                        boltAndCaptiveNut(25,7,25);
+                    }
+                    }
+            }
+            
+            //slide in arm attachment
+            translate([(UPPER_ARM_BRACE_WIDTH/2)-22,0,-11]){
+                    bearingCapInsert();
+                }
+
+                    mirror([1,0,0]){
+                        translate([(UPPER_ARM_BRACE_WIDTH/2)-22,0,-11]){
+                        bearingCapInsert();
+                    }
+                }
+        }
     }
 }
 
@@ -686,6 +728,51 @@ module shoulderMotorBracket(){
                 cube([MOTOR_WIDTH,extensionOffset+2.3,(MOTOR_HEIGHT-extensionOffset)-2]);
             }
                         
+        }
+    }
+}
+
+module bearingCapInsert(){
+    difference(){
+        union(){
+            cube(size=[24, UPPER_ARM_BRACE_THIC, 15], center=true);
+            translate([-12, 0, 2.4]) {
+                rotate([90,-30,0]){
+                    cylinder(r=9.9, h=UPPER_ARM_BRACE_THIC, center=true, $fn=3);
+                }
+            }
+
+            mirror([1,0,0]){
+                    translate([-12, 0, 2.4]) {
+                    rotate([90,-30,0]){
+                        cylinder(r=9.9, h=UPPER_ARM_BRACE_THIC, center=true, $fn=3);
+                    }
+                }
+            }
+        }
+        braceBearingSlideAttachment();
+    }
+}
+
+module braceBearingSlideAttachment(){
+    union(){
+         rotate([90, 90, 0]){
+            cylinder(r=(BEARING_OD/3)+1.4, h=25.13, center=true, $fn=3);
+        }
+
+        translate([5.5, 0, 0]) {
+            rotate([0,180,0]) {
+                boltAndCaptiveNut(0,5,25);
+            }
+        }
+
+        translate([-5.5, 0, 0]) {
+            rotate([0,180,0]) {
+                boltAndCaptiveNut(0,5,25);
+            }
+        }
+        translate([0, 0, -6]) {
+            cube(size=[(BEARING_HEIGHT/1.2)+1, 25, 10], center=true); 
         }
     }
 }

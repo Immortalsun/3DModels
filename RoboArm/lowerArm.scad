@@ -16,7 +16,7 @@ MOTOR_SHAFT_THRU_RADIUS = 11;//mm
 MOTOR_SHAFT_RADIUS = 2.5;//mm
 
 //motor screwhole dimensions
-MTR_SCREW_RAD = 1.45;//mm
+MTR_SCREW_RAD = 1.65;//mm
 MTR_SCREW_HEIGHT = 5.3;//mm
 MTR_SCREW_COUNTERSINK_HEIGHT = 2;//mm
 MTR_SCREW_COUNTERSINK_RAD = 2.7;//mm
@@ -68,25 +68,29 @@ module main(){
     //internalArmFrame();
     difference(){
          union(){
-            translate([0, 0, ARM_SHLDR_ELBW_HEIGHT+PLATFORM_HEIGHT+29.5]) {
+            //translate([0, 0, ARM_SHLDR_ELBW_HEIGHT+PLATFORM_HEIGHT+29.5]) {
                 elbowPlatform();
                 elbowMountHousingMain();
-            }
-        }
-        translate([0,0,206.5]){
-            rotate([0, 0, 90]) {
-                mirror([0,0,1]){
-                    footMountingScrewHole();
 
-                    mirror([1, 0, 0]) {
-                        footMountingScrewHole();
-                    }
-                }
-            }
+               //motorBracket();
+                
+                   
+            //}
         }
-        translate([0, 0, 8]) {
-            cylinder(r=AXLE_RAD+.1, h=450, center=true, $fn=_sideRes);
-        }
+        // translate([0,0,206.5]){
+        //     rotate([0, 0, 90]) {
+        //         mirror([0,0,1]){
+        //             footMountingScrewHole();
+
+        //             mirror([1, 0, 0]) {
+        //                 footMountingScrewHole();
+        //             }
+        //         }
+        //     }
+        // }
+        // translate([0, 0, 8]) {
+        //     cylinder(r=AXLE_RAD+.1, h=450, center=true, $fn=_sideRes);
+        // }
      }
     translate([0, 0, 38.5]){ 
         rotate([0, 0, 90]) {
@@ -94,7 +98,6 @@ module main(){
         }
     }
 
-    //motorBracket();
    
 }
 
@@ -185,15 +188,6 @@ module elbowPlatform(){
                 } 
             }
         }
-        
-        //motor stand-in 
-        // translate([MOTOR_HEIGHT/1.2, 0-LID_RAD/3, MOTOR_WIDTH]) {
-        //     rotate([-90, 0, 90]) {
-        //         motorStandIn();
-        //     }
-        // }
-
-          
     }
 }
 
@@ -221,42 +215,30 @@ module elbowMountHousingMain(){
 
 
             mirror([0, 1, 0]) {
-                union(){
-                    translate([0, 2, 0]) {
-                        difference(){
-                             elbowHousingFrontSupport();
-                             translate([0, -25, 32.55]) {
-                                 cube([MOTOR_WIDTH+18,PLTFRM_PANEL_THICKNESS,8], center=true);
-                             }
-                        }
-                    }
-                    //rear triangular brace
+                difference(){
                     union(){
-                         translate([0,-5.5, 15]){
+                        translate([0, 2, 0]) {
                             difference(){
-                                rotate([0, 0, 45]) {
-                                    cylinder(r1=24, r2 = (MOTOR_WIDTH+44)/2, h=PLTFRM_PANEL_WTH+2, center = true, $fn=4);
-                                }
-                                translate([0, 7, 0]) {
-                                    cube(size=[MOTOR_WIDTH+20, 48, PLTFRM_PANEL_WTH+55], center=true);
+                                elbowHousingFrontSupport();
+                                translate([0, -25, 32.55]) {
+                                    cube([MOTOR_WIDTH+18,PLTFRM_PANEL_THICKNESS,8], center=true);
                                 }
                             }
                         }
-                        //45 degree gap fill
-                        translate([MOTOR_WIDTH-17.2, -MOTOR_WIDTH+15,20.5]) {
-                            difference(){
-                                 cube(size=[8, 10, 15], center=true);
-                                 translate([0, -4, -7]) {
-                                      rotate([45, 0, 0]) {
-                                        cube(size=[10, 10, 14], center=true);
+                        //rear triangular brace
+                        union(){
+                            translate([0,-5.5, 15]){
+                                difference(){
+                                    rotate([0, 0, 45]) {
+                                        cylinder(r1=24, r2 = (MOTOR_WIDTH+44)/2, h=PLTFRM_PANEL_WTH+2, center = true, $fn=4);
                                     }
-                                 }
-                                
+                                    translate([0, 7, 0]) {
+                                        cube(size=[MOTOR_WIDTH+20, 48, PLTFRM_PANEL_WTH+55], center=true);
+                                    }
+                                }
                             }
-                        }
-
-                        mirror([1,0,0]){
-                            translate([MOTOR_WIDTH-17.2, -MOTOR_WIDTH+15, 20.5]) {
+                            //45 degree gap fill
+                            translate([MOTOR_WIDTH-17.2, -MOTOR_WIDTH+15,20.5]) {
                                 difference(){
                                     cube(size=[8, 10, 15], center=true);
                                     translate([0, -4, -7]) {
@@ -267,12 +249,63 @@ module elbowMountHousingMain(){
                                     
                                 }
                             }
+
+                            mirror([1,0,0]){
+                                translate([MOTOR_WIDTH-17.2, -MOTOR_WIDTH+15, 20.5]) {
+                                    difference(){
+                                        cube(size=[8, 10, 15], center=true);
+                                        translate([0, -4, -7]) {
+                                            rotate([45, 0, 0]) {
+                                                cube(size=[10, 10, 14], center=true);
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                            //end gap fill
                         }
-                        //end gap fill
+                    }
+
+                     translate([-17, -22, 29]) {
+                         union(){
+                             rotate([45, 0, 0]) {
+                                cube([16.8,PLTFRM_PANEL_THICKNESS+2.5,8], center=true);
+                            }
+                         }                        
                     }
                 }
             }
         }
+
+        //motor bracket mount
+        translate([12.5, -2.3, (MOTOR_WIDTH/2)+2.5]) {
+                translate([-MOTOR_HEIGHT-10, (MOTOR_WIDTH/2)-5, (-MOTOR_WIDTH/2)+5]) {
+                    rotate([0, 90, 0]) {
+                        cylinder(r=MTR_SCREW_RAD, h=15, center=true, $fn=_sideRes);
+                    }
+                }
+
+                 translate([-MOTOR_HEIGHT-10, -(MOTOR_WIDTH/2)+5, (-MOTOR_WIDTH/2)+5]) {
+                   rotate([0, 90, 0]) {
+                        cylinder(r=MTR_SCREW_RAD, h=15, center=true, $fn=_sideRes);
+                    }
+                }
+
+                 translate([-MOTOR_HEIGHT-10, (MOTOR_WIDTH/2)-5, (-MOTOR_WIDTH/2)+35]) {
+                    rotate([0, 90, 0]) {
+                        cylinder(r=MTR_SCREW_RAD, h=15, center=true, $fn=_sideRes);
+                    }
+                }
+
+                 translate([-MOTOR_HEIGHT-10, -(MOTOR_WIDTH/2)+5, (-MOTOR_WIDTH/2)+35]) {
+                   rotate([0, 90, 0]) {
+                        cylinder(r=MTR_SCREW_RAD, h=15, center=true, $fn=_sideRes);
+                    }
+                }
+        }
+
+
     }
 }
 
@@ -318,11 +351,37 @@ module elbowHousingSidePanel(){
 
 module motorStandIn(){
     union(){
-        cube([MOTOR_WIDTH, MOTOR_WIDTH, MOTOR_HEIGHT]);
-        translate([MOTOR_WIDTH/2, MOTOR_WIDTH/2, MOTOR_HEIGHT]) {
-            cylinder(r=MOTOR_SHAFT_THRU_RADIUS, h=3, center = true, $fn=_sideRes);
+        cube([MOTOR_WIDTH, MOTOR_WIDTH, MOTOR_HEIGHT], center=true);
+        translate([0, 0, MOTOR_HEIGHT/2]) {
+            cylinder(r=MOTOR_SHAFT_THRU_RADIUS, h=18, center = true, $fn=_sideRes);
             translate([0, 0, 12]) {
-                cylinder(r=MOTOR_SHAFT_RADIUS,h=21, center=true,$fn=_sideRes);
+                cylinder(r=8.2,h=29, center=true,$fn=_sideRes);
+            }
+        }
+
+        translate([(MOTOR_WIDTH/2)+2.5, 0, (-MOTOR_HEIGHT/2)+4.5]) {
+            cube(size=[20, 16, 9], center=true);
+        }
+
+        translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+            cylinder(r=MTR_SCREW_RAD, h=12, center=true, $fn=_sideRes);
+        }
+
+        rotate([0,0,90]){
+            translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD, h=12, center=true, $fn=_sideRes);
+            }
+        }
+
+        rotate([0,0,180]){
+            translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD, h=32, center=true, $fn=_sideRes);
+            }
+        }
+
+        rotate([0,0,270]){
+            translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD, h=32, center=true, $fn=_sideRes);
             }
         }
     } 
@@ -406,66 +465,102 @@ module innerArmXBrace(snapRadius = 3.25){
 }
 
 module motorBracket(){
+    mountX = 24.85;
+    mountY = 45;
+    mountZ = MOTOR_WIDTH;
     union(){
-        difference(){
-            cube([MOTOR_WIDTH,MOTOR_WIDTH+4,MOTOR_HEIGHT+1]);
+         translate([12.5, -2.3, (MOTOR_WIDTH/2)+2.5]) {
 
+             difference(){
+                 union(){
+                    difference(){
+                        translate([-MOTOR_HEIGHT+4.5, 1, 0]){
+                            cube(size=[mountX, mountY, mountZ], center=true);
+                        } 
 
-            translate([-5,-10,-.1]){
-                  cube(size=[55, 90, 11]);
-            }
+                        translate([-MOTOR_HEIGHT+4.5, 1, 2]) {
+                            cube([mountX-8, mountY+2, mountZ], center=true);
+                        }
 
-            translate([MOTOR_WIDTH-35,-5,MOTOR_HEIGHT/1.7]){
-                 rotate([90, 0, 0]){
-                     cylinder(r=1.7, h=50, center=true, $fn=_sideRes);
-                 } 
-            }
+                        translate([-MOTOR_HEIGHT-7, 2, 39.5]) {
+                           cube([8, mountY+4, mountZ], center=true);
+                        }
+                    }
 
-              translate([MOTOR_WIDTH-5,-5,MOTOR_HEIGHT/1.7]){
-                 rotate([90, 0, 0]){
-                     cylinder(r=1.7, h=50, center=true, $fn=_sideRes);
-                 } 
-            }
-          
-            translate([-2, 2, -4.5]) {
-                cube([MOTOR_WIDTH+8,MOTOR_WIDTH+8,MOTOR_HEIGHT+4]);
-            }
+                    translate([-19, (mountY/2)+1, -20]) {
+                         rotate([0, -90, 90]) {
+                            triangle(mountY/2, mountX/2, mountY);
+                        }
+                    }  
+                }
 
-            translate([(MOTOR_WIDTH)/2, (MOTOR_WIDTH+6)/2, MOTOR_HEIGHT-5]) {
-                cylinder(r=11.35,h=25,$fn=_sideRes);
-            }
+                //countersink cutouts for motor mount
+                translate([-MOTOR_HEIGHT+5.08, (MOTOR_WIDTH/2)-5, (-MOTOR_WIDTH/2)+5]) {
+                    rotate([0, 90, 0]) {
+                        cylinder(r=MTR_SCREW_COUNTERSINK_RAD+2, h=18, center=true, $fn=_sideRes);
+                    }
+                }
 
-            translate([MOTOR_WIDTH-6, 9, MOTOR_HEIGHT-2]) {
-                cylinder(r=MTR_SCREW_RAD, h=MTR_SCREW_HEIGHT, $fn=_sideRes);
-            }
+                 translate([-MOTOR_HEIGHT+5.08, -(MOTOR_WIDTH/2)+5, (-MOTOR_WIDTH/2)+5]) {
+                   rotate([0, 90, 0]) {
+                        cylinder(r=MTR_SCREW_COUNTERSINK_RAD+2, h=18, center=true, $fn=_sideRes);
+                    }
+                }
+                //end countersinks
 
+                //motor bracket mount to elbow joint screws
+                translate([-MOTOR_HEIGHT-10, (MOTOR_WIDTH/2)-5, (-MOTOR_WIDTH/2)+5]) {
+                    rotate([0, 90, 0]) {
+                        cylinder(r=MTR_SCREW_RAD, h=15, center=true, $fn=_sideRes);
+                    }
+                }
 
-            translate([6, 9, MOTOR_HEIGHT-2]) {
-                cylinder(r=MTR_SCREW_RAD, h=MTR_SCREW_HEIGHT, $fn=_sideRes);
-            }
+                 translate([-MOTOR_HEIGHT-10, -(MOTOR_WIDTH/2)+5, (-MOTOR_WIDTH/2)+5]) {
+                   rotate([0, 90, 0]) {
+                        cylinder(r=MTR_SCREW_RAD, h=15, center=true, $fn=_sideRes);
+                    }
+                }
 
-            translate([6, MOTOR_WIDTH-3, MOTOR_HEIGHT-2]) {
-                cylinder(r=MTR_SCREW_RAD, h=MTR_SCREW_HEIGHT, $fn=_sideRes);
-            }
+                 translate([-MOTOR_HEIGHT-10, (MOTOR_WIDTH/2)-5, (-MOTOR_WIDTH/2)+35]) {
+                    rotate([0, 90, 0]) {
+                        cylinder(r=MTR_SCREW_RAD, h=15, center=true, $fn=_sideRes);
+                    }
+                }
 
-            translate([MOTOR_WIDTH-6, MOTOR_WIDTH-3, MOTOR_HEIGHT-2]) {
-                cylinder(r=MTR_SCREW_RAD, h=MTR_SCREW_HEIGHT, $fn=_sideRes);
-            }
+                 translate([-MOTOR_HEIGHT-10, -(MOTOR_WIDTH/2)+5, (-MOTOR_WIDTH/2)+35]) {
+                   rotate([0, 90, 0]) {
+                        cylinder(r=MTR_SCREW_RAD, h=15, center=true, $fn=_sideRes);
+                    }
+                }
+                //end motor bracket mount to elbow joint screws
+
+                rotate([90, 0, -90]) {
+                    motorStandIn();
+                }
+
+             }
         }
-
-        // translate([0, -MOTOR_WIDTH/2, 0]) {
-        //     difference(){
-        //         cube([MOTOR_WIDTH,MOTOR_WIDTH/2,5]);
-
-        //         translate([MOTOR_WIDTH/2, MOTOR_WIDTH/4, -2]) {
-        //             cylinder(r=1.65,h=10,$fn=_sideRes);
-        //         }                 
-        //     }
-        // }
-        
     }
 }
 
 module wireRouteHole(){
     cube([ROUTE_DEPTH,ROUTE_HT,ROUTE_WTH], center=true);    
+}
+
+/**
+ * Standard right-angled triangle
+ *
+ * @param number  o_len  Length of the opposite side
+ * @param number  a_len  Length of the adjacent side
+ * @param number  depth  How wide/deep the triangle is in the 3rd dimension
+ * @param boolean center Whether to center the triangle on the origin
+ * @todo a better way ?
+ */
+module triangle(o_len, a_len, depth, center=false)
+{
+    centroid = center ? [-a_len/3, -o_len/3, -depth/2] : [0, 0, 0];
+    translate(centroid) linear_extrude(height=depth)
+    {
+        polygon(points=[[0,0],[a_len,0],[0,o_len]], paths=[[0,1,2]]);
+    }
 }

@@ -16,7 +16,7 @@ MOTOR_SHAFT_THRU_RADIUS = 11;//mm
 MOTOR_SHAFT_RADIUS = 2.5;//mm
 
 //motor screwhole dimensions
-MTR_SCREW_RAD = 1.45;//mm
+MTR_SCREW_RAD = 1.6;//mm
 MTR_SCREW_HEIGHT = 5.3;//mm
 MTR_SCREW_COUNTERSINK_HEIGHT = 2;//mm
 MTR_SCREW_COUNTERSINK_RAD = 2.7;//mm
@@ -91,21 +91,142 @@ main();
 module main(){
     union(){
 
-        wristKey();
+        //wristKey();
 
-        translate([0, 0, MOTOR_HEIGHT]) {
-            motorStandIn();
+        //keyAttachmentMount();
+
+        //wrist rotation motor housing
+        translate([0, 0, (MOTOR_HEIGHT/2)-9]) {
+            wristMotorMount();
+        }
+        translate([0, 0, (MOTOR_HEIGHT/2)+6]) {
+            //motorStandIn();
         }
 
-        translate([0, 0, -15]) {
-             upperArmWristMount();
+        translate([0, 0, -8]) {
+            rotate([0, 0, -45]) {
+                //upperArmWristMount();
+            }
         }
     }
 }
 
 
 module keyAttachmentMount(){
+    motorHeightGap = 4;//mm
+    keyHeight = 3;
+    translate([0,0,keyHeight]){
+        difference(){
+            union(){
+                //base key attachment    
+                cylinder(r1=18.5, r2=21, h=motorHeightGap, center=true, $fn=4);
+                 translate([0, 0, keyHeight+1]) {
+                    cylinder(r=35,h=4.5,center=true, $fn=_sideRes);
+                }
+            }
+            keyExteriorScrewMounts();
+            keyInteriorScrewMounts();
+
+            translate([0, 0, 4]) {
+                 nutLockChannel(75);
+            }
+
+             translate([0, 0, 4]) {
+                 rotate([0, 0, 90]) {
+                      nutLockChannel(75);
+                 }
+                
+            }
+           
+
+
+        }
+    }
     
+}
+
+module wristMotorMount(){
+
+     union(){
+            difference(){
+                 
+                union(){
+                      rotate([0, 0, 0]) {
+                        cylinder(r1=33, r2=33, h=3, center=true, $fn=_sideRes);
+                    }
+                    translate([0, 0, 16]) {
+                        cube([MOTOR_WIDTH+3, MOTOR_WIDTH+3, MOTOR_HEIGHT], center=true);
+                    }
+                } 
+              
+               
+
+                translate([0, 0, 15.2]) {
+                   motorStandIn();
+                   
+                }
+                translate([0, 0, -.5]) {
+                    cube([MOTOR_WIDTH+.8, MOTOR_WIDTH+.8, 65.5], center=true);
+                }
+
+                keyExteriorScrewMounts();
+                
+        }
+     }
+}
+
+module nutLockChannel(length = 25){
+   cube([5.8,length,2.8], center=true);
+}
+
+
+module keyInteriorScrewMounts(){
+     translate([15, 0, 0]){
+        cylinder(r=2, h=20, center=true, $fn=_sideRes);
+    } 
+
+    rotate([0, 0, 90]){
+        translate([15, 0, 0]){
+            cylinder(r=2, h=20, center=true, $fn=_sideRes);
+        } 
+    }  
+
+    rotate([0, 0, 180]){
+        translate([15, 0, 0]){
+            cylinder(r=2, h=20, center=true, $fn=_sideRes);
+        } 
+    }  
+    
+    rotate([0, 0, 270]){
+        translate([15, 0, 0]){
+            cylinder(r=2, h=20, center=true, $fn=_sideRes);
+        } 
+    }
+}
+
+module keyExteriorScrewMounts(){
+    
+       translate([30, 0, 0]){
+            cylinder(r=2, h=20, center=true, $fn=_sideRes);
+        } 
+
+        rotate([0, 0, 90]){
+            translate([30, 0, 0]){
+                cylinder(r=2, h=20, center=true, $fn=_sideRes);
+            } 
+        }  
+
+        rotate([0, 0, 180]){
+            translate([30, 0, 0]){
+                cylinder(r=2, h=20, center=true, $fn=_sideRes);
+            } 
+        }  
+        
+        rotate([0, 0, 270]){
+            translate([30, 0, 0]){
+                cylinder(r=2, h=20, center=true, $fn=_sideRes);
+            } 
+        }
 }
 
 
@@ -136,51 +257,8 @@ module wristKey(){
             }
         }
        
-
-       translate([30, 0, 0]){
-            cylinder(r=2, h=40, center=true, $fn=_sideRes);
-        } 
-
-        rotate([0, 0, 90]){
-            translate([30, 0, 0]){
-                cylinder(r=2, h=40, center=true, $fn=_sideRes);
-            } 
-        }  
-
-        rotate([0, 0, 180]){
-            translate([30, 0, 0]){
-                cylinder(r=2, h=40, center=true, $fn=_sideRes);
-            } 
-        }  
-        
-        rotate([0, 0, 270]){
-            translate([30, 0, 0]){
-                cylinder(r=2, h=40, center=true, $fn=_sideRes);
-            } 
-        }
-
-         translate([15, 0, 0]){
-            cylinder(r=2, h=40, center=true, $fn=_sideRes);
-        } 
-
-        rotate([0, 0, 90]){
-            translate([15, 0, 0]){
-                cylinder(r=2, h=40, center=true, $fn=_sideRes);
-            } 
-        }  
-
-        rotate([0, 0, 180]){
-            translate([15, 0, 0]){
-                cylinder(r=2, h=40, center=true, $fn=_sideRes);
-            } 
-        }  
-        
-        rotate([0, 0, 270]){
-            translate([15, 0, 0]){
-                cylinder(r=2, h=40, center=true, $fn=_sideRes);
-            } 
-        }
-
+        keyInteriorScrewMounts();
+        keyExteriorScrewMounts();
         cylinder(r=AXLE_RAD+.2, h=40, center=true, $fn=_sideRes);  
     }
 }
@@ -311,6 +389,32 @@ module motorStandIn(){
             cylinder(r=MOTOR_SHAFT_THRU_RADIUS, h=3, center = true, $fn=_sideRes);
             translate([0, 0, 12]) {
                 cylinder(r=MOTOR_SHAFT_RADIUS,h=21, center=true,$fn=_sideRes);
+            }
+        }
+
+        translate([(MOTOR_WIDTH/2)+2.5, 0, (-MOTOR_HEIGHT/2)+4.5]) {
+            cube(size=[20, 16, 9], center=true);
+        }
+
+        translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+            cylinder(r=MTR_SCREW_RAD, h=12, center=true, $fn=_sideRes);
+        }
+
+        rotate([0,0,90]){
+            translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD, h=12, center=true, $fn=_sideRes);
+            }
+        }
+
+        rotate([0,0,180]){
+            translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD, h=12, center=true, $fn=_sideRes);
+            }
+        }
+
+        rotate([0,0,270]){
+            translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD, h=12, center=true, $fn=_sideRes);
             }
         }
     } 

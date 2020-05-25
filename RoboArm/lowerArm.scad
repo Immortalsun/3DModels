@@ -10,7 +10,7 @@ FLANGE_WIDTH = LID_RAD*1.5;
 FLANGE_LENGTH = 10;//mm
 
 //Motor Dimensions
-MOTOR_WIDTH = 42.3;//mm
+MOTOR_WIDTH = 42.2;//mm
 MOTOR_HEIGHT = 34;//mm //smaller NEMA motor, other height is 38.5
 MOTOR_SHAFT_THRU_RADIUS = 11;//mm
 MOTOR_SHAFT_RADIUS = 2.5;//mm
@@ -68,26 +68,26 @@ module main(){
     //internalArmFrame();
     difference(){
          union(){
-            //translate([0, 0, ARM_SHLDR_ELBW_HEIGHT+PLATFORM_HEIGHT+29.5]) {
-                elbowPlatform();
-                elbowMountHousingMain();
+            translate([0, 0, ARM_SHLDR_ELBW_HEIGHT+PLATFORM_HEIGHT+29.5]) {
+                // elbowPlatform();
+                // elbowMountHousingMain();
 
-               //motorBracket();
+               motorBracket();
                 
-                   
-            //}
+               //motorStandIn();
+            }
         }
-        // translate([0,0,206.5]){
-        //     rotate([0, 0, 90]) {
-        //         mirror([0,0,1]){
-        //             footMountingScrewHole();
+        translate([0,0,206.5]){
+            rotate([0, 0, 90]) {
+                mirror([0,0,1]){
+                    footMountingScrewHole();
 
-        //             mirror([1, 0, 0]) {
-        //                 footMountingScrewHole();
-        //             }
-        //         }
-        //     }
-        // }
+                    mirror([1, 0, 0]) {
+                        footMountingScrewHole();
+                    }
+                }
+            }
+        }
         // translate([0, 0, 8]) {
         //     cylinder(r=AXLE_RAD+.1, h=450, center=true, $fn=_sideRes);
         // }
@@ -238,7 +238,7 @@ module elbowMountHousingMain(){
                                 }
                             }
                             //45 degree gap fill
-                            translate([MOTOR_WIDTH-17.2, -MOTOR_WIDTH+15,20.5]) {
+                            translate([MOTOR_WIDTH-16.7, -MOTOR_WIDTH+15,20.5]) {
                                 difference(){
                                     cube(size=[8, 10, 15], center=true);
                                     translate([0, -4, -7]) {
@@ -251,7 +251,7 @@ module elbowMountHousingMain(){
                             }
 
                             mirror([1,0,0]){
-                                translate([MOTOR_WIDTH-17.2, -MOTOR_WIDTH+15, 20.5]) {
+                                translate([MOTOR_WIDTH-16.7, -MOTOR_WIDTH+15, 20.5]) {
                                     difference(){
                                         cube(size=[8, 10, 15], center=true);
                                         translate([0, -4, -7]) {
@@ -352,6 +352,7 @@ module elbowHousingSidePanel(){
 module motorStandIn(){
     union(){
         cube([MOTOR_WIDTH, MOTOR_WIDTH, MOTOR_HEIGHT], center=true);
+
         translate([0, 0, MOTOR_HEIGHT/2]) {
             cylinder(r=MOTOR_SHAFT_THRU_RADIUS, h=18, center = true, $fn=_sideRes);
             translate([0, 0, 12]) {
@@ -363,25 +364,25 @@ module motorStandIn(){
             cube(size=[20, 16, 9], center=true);
         }
 
-        translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
-            cylinder(r=MTR_SCREW_RAD, h=12, center=true, $fn=_sideRes);
+        translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5.5,MOTOR_HEIGHT/2]){
+            cylinder(r=MTR_SCREW_RAD+.2, h=12, center=true, $fn=_sideRes);
         }
 
         rotate([0,0,90]){
-            translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
-                cylinder(r=MTR_SCREW_RAD, h=12, center=true, $fn=_sideRes);
+            translate([(MOTOR_WIDTH/2)-5.5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD+.2, h=12, center=true, $fn=_sideRes);
             }
         }
 
         rotate([0,0,180]){
-            translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
-                cylinder(r=MTR_SCREW_RAD, h=32, center=true, $fn=_sideRes);
+            translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5.5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD+.2, h=32, center=true, $fn=_sideRes);
             }
         }
 
         rotate([0,0,270]){
-            translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
-                cylinder(r=MTR_SCREW_RAD, h=32, center=true, $fn=_sideRes);
+            translate([(MOTOR_WIDTH/2)-5.5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD+.2, h=32, center=true, $fn=_sideRes);
             }
         }
     } 
@@ -495,13 +496,13 @@ module motorBracket(){
                 }
 
                 //countersink cutouts for motor mount
-                translate([-MOTOR_HEIGHT+5.08, (MOTOR_WIDTH/2)-5, (-MOTOR_WIDTH/2)+5]) {
+                translate([-MOTOR_HEIGHT+5.08, (MOTOR_WIDTH/2)-5, (-MOTOR_WIDTH/2)+5.4]) {
                     rotate([0, 90, 0]) {
                         cylinder(r=MTR_SCREW_COUNTERSINK_RAD+2, h=18, center=true, $fn=_sideRes);
                     }
                 }
 
-                 translate([-MOTOR_HEIGHT+5.08, -(MOTOR_WIDTH/2)+5, (-MOTOR_WIDTH/2)+5]) {
+                 translate([-MOTOR_HEIGHT+5.08, -(MOTOR_WIDTH/2)+5, (-MOTOR_WIDTH/2)+5.4]) {
                    rotate([0, 90, 0]) {
                         cylinder(r=MTR_SCREW_COUNTERSINK_RAD+2, h=18, center=true, $fn=_sideRes);
                     }

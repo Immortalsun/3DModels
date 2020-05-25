@@ -56,7 +56,7 @@ _hollowLengthOffset = 5;//mm
 main();
 
 module main(){
-    //import("E:/Programerinos/userSave/RoboArm/drawings/rb_LIDv2.stl");
+    import("E:/Programerinos/userSave/RoboArm/drawings/rb_LIDv2.stl");
     difference(){
         union(){
             platformAttachment();
@@ -64,18 +64,24 @@ module main(){
            //motorBracketPressureBlock();
 
             //motor stand-in 
-            // translate([MOTOR_HEIGHT/1.2, 0-LID_RAD/3, MOTOR_WIDTH+LID_HEIGHT+4]) {
-            //     rotate([-90, 0, 90]) {
-            //         motorStandIn();
-            //     }
-            // }
+            translate([-MOTOR_HEIGHT-LID_RAD/2,0,LID_HEIGHT+FLANGE_HEIGHT*1.85]) {
+                rotate([90, 0, 90]) {
+                    motorStandIn();
+                }
+            }
+
+            translate([MOTOR_HEIGHT+LID_RAD/2,0,LID_HEIGHT+FLANGE_HEIGHT*1.85]) {
+                rotate([-90, 0, 90]) {
+                    motorStandIn();
+                }
+            }
 
             //mainLowerArm();
             //axleDriveGear();
 
             //shoulderMotorBracket();
         }
-        axle();
+        //axle();
         // /crossSection(50);
     }
 }
@@ -120,15 +126,15 @@ module platformSidePanels(){
                 }
             }
 
-            translate([-MOTOR_HEIGHT+5, -5.3, MOTOR_WIDTH-15]) {
-                rotate([0, 90, 0]) {
-                    shoulderMotorBracket();
-                }
-            }
+            // translate([-MOTOR_HEIGHT+5, -5.3, MOTOR_WIDTH-15]) {
+            //     rotate([0, 90, 0]) {
+            //         shoulderMotorBracket();
+            //     }
+            // }
 
-            translate([MOTOR_WIDTH/2.34, MOTOR_HEIGHT+5, 6]) {
-                motorBracketPressureBlock();
-            }
+            // translate([MOTOR_WIDTH/2.34, MOTOR_HEIGHT+5, 6]) {
+            //     motorBracketPressureBlock();
+            // }
             
             translate([MOUNT_OUTER_WIDTH/2, BEARING_OD/2, FLANGE_HEIGHT/1.5]){
                  lowerArmStopPeg();
@@ -194,12 +200,39 @@ module axleDriveGear(){
 
 
 module motorStandIn(){
-    union(){
-        cube([MOTOR_WIDTH, MOTOR_WIDTH, MOTOR_HEIGHT]);
-        translate([MOTOR_WIDTH/2, MOTOR_WIDTH/2, MOTOR_HEIGHT]) {
-            cylinder(r=MOTOR_SHAFT_THRU_RADIUS, h=3, center = true, $fn=_sideRes);
+      union(){
+        cube([MOTOR_WIDTH, MOTOR_WIDTH, MOTOR_HEIGHT], center=true);
+
+        translate([0, 0, MOTOR_HEIGHT/2]) {
+            cylinder(r=MOTOR_SHAFT_THRU_RADIUS, h=10, center = true, $fn=_sideRes);
             translate([0, 0, 12]) {
-                cylinder(r=MOTOR_SHAFT_RADIUS,h=21, center=true,$fn=_sideRes);
+                cylinder(r=MOTOR_SHAFT_RADIUS,h=29, center=true,$fn=_sideRes);
+            }
+        }
+
+        translate([(MOTOR_WIDTH/2)+2.5, 0, (-MOTOR_HEIGHT/2)+4.5]) {
+            cube(size=[20, 16, 9], center=true);
+        }
+
+        translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5.5,MOTOR_HEIGHT/2]){
+            cylinder(r=MTR_SCREW_RAD+.2, h=12, center=true, $fn=_sideRes);
+        }
+
+        rotate([0,0,90]){
+            translate([(MOTOR_WIDTH/2)-5.5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD+.2, h=12, center=true, $fn=_sideRes);
+            }
+        }
+
+        rotate([0,0,180]){
+            translate([(MOTOR_WIDTH/2)-5,(MOTOR_WIDTH/2)-5.5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD+.2, h=12, center=true, $fn=_sideRes);
+            }
+        }
+
+        rotate([0,0,270]){
+            translate([(MOTOR_WIDTH/2)-5.5,(MOTOR_WIDTH/2)-5,MOTOR_HEIGHT/2]){
+                cylinder(r=MTR_SCREW_RAD+.2, h=12, center=true, $fn=_sideRes);
             }
         }
     } 
@@ -756,7 +789,7 @@ module shoulderMotorBracket(){
                     }
                     translate([MOTOR_WIDTH/2, -16, 11.575]){
                         rotate([90, 30, 0]) {
-                            cylinder(r=(MOTOR_WIDTH/2)+2, h=8, center=true, $fn=3);
+                            //cylinder(r=(MOTOR_WIDTH/2)+2, h=8, center=true, $fn=3);
                         }
                     } 
                    

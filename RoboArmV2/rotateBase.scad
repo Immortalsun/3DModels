@@ -44,7 +44,7 @@ main();
 
 module main(){
     difference(){
-        panelMount();
+        mainBase();
         //crossSection(_crossectionThiccness);
         //oppositeCrossSection(_crossectionThiccness);
     }
@@ -57,48 +57,56 @@ module Lid(){
     screwCapRad = 2.6;
     screwCapZTrans = 2.6;
     union(){
-        //   difference(){
-        //     translate([0, 0, 0]) {  
-        //         cylinder(r=LID_RAD, h=LID_HEIGHT, $fn=_sideRes);
-        //     }
-        //     translate([0, 0, -1]){
-        //        cube([36.5,36.5,15], center=true);
-        //     }
+          difference(){
+            cylinder(r=LID_RAD, h=LID_HEIGHT, $fn=_sideRes);
 
-        //     translate([25, 0, 0]){
-        //         cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
-        //     }
 
-        //     translate([-25, 0, 0]){
-        //         cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
-        //     }
+            translate([0, 0, -1]){
+               cube([36.5,36.5,15], center=true);
+            }
 
-        //      translate([0, 25, 0]){
-        //         cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
-        //     }
+            translate([25, 0, 0]){
+                cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
+            }
 
-        //     translate([0, -25, 0]){
-        //         cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
-        //     }
+            translate([-25, 0, 0]){
+                cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
+            }
 
-        //     translate([25, 0, screwCapZTrans]){
-        //         cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
-        //     }
+             translate([0, 25, 0]){
+                cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
+            }
 
-        //     translate([-25, 0, screwCapZTrans]){
-        //         cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
-        //     }
+            translate([0, -25, 0]){
+                cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
+            }
 
-        //      translate([0, 25, screwCapZTrans]){
-        //         cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
-        //     }
+            translate([25, 0, screwCapZTrans]){
+                cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
+            }
 
-        //     translate([0, -25, screwCapZTrans]){
-        //         cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
-        //     }                     
-        // }
+            translate([-25, 0, screwCapZTrans]){
+                cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
+            }
 
-        
+             translate([0, 25, screwCapZTrans]){
+                cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
+            }
+
+            translate([0, -25, screwCapZTrans]){
+                cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
+            }                     
+        }
+
+        //lid support ring
+        translate([0, 0, -LID_HEIGHT+2]) {
+            difference(){
+                    cylinder(r=LID_RAD, h=LID_HEIGHT-1, $fn=_sideRes);
+                    translate([0, 0, -1]) {
+                        cylinder(r=LID_RAD-5, h=LID_HEIGHT+5, $fn=_sideRes);
+                    }
+            }
+        }
 
         translate([0, 0, -3]) {
            //keyedLidBracket();
@@ -106,7 +114,7 @@ module Lid(){
 
         translate([0, 0, -10]){
             rotate([0, 90, 0]){
-                axleFlangeMount();
+                //axleFlangeMount();
             } 
         } 
 
@@ -151,62 +159,68 @@ module keyedLidBracket(){
 }
 
 
-module panelMount(){
+module mainBase(){
     union(){
-        // difference(){
-        //     cylinder(r=BASE_RAD,h=BASE_HEIGHT, $fn=_sideRes);
-        //     translate([0, 0, _hollowLengthOffset]) {
-        //         cylinder(r=BASE_RAD-BASE_THICKNESS, h=BASE_HEIGHT+_hollowLengthOffset, $fn=_sideRes);
-        //     }
-        //     motorMountPeg();
-        //     footPeg();
-        //     rotate([0, 0, 90]) {
-        //         footPeg();
-        //     }
-        //     rotate([0, 0, 180]) {
-        //         footPeg();
-        //     }
-        //     rotate([0, 0, 270]) {
-        //         footPeg();
-        //     }
-        //     rotate([0, 0, 315]) {
-        //         computerBoxWireHole();
-        //     }
-           
-        // }
-
-        // //underside clearance ring
-        //  translate([0, 0, -5]) {
-        //          difference(){
-        //             cylinder(r=BASE_RAD,h=5, $fn=_sideRes);
-        //             translate([0, 0, _hollowLengthOffset-6]) {
-        //                 cylinder(r=BASE_RAD-BASE_THICKNESS, h=BASE_HEIGHT+_hollowLengthOffset, $fn=_sideRes);
-        //             }
-        //         }
-        //     }
-
+       
+        // baseDrum();
         
-
-        // radial symmetry foots
-        foot();
-        // rotate([0, 0, 90]) {
-        //     foot();
-        // }
-        // rotate([0, 0, 180]) {
-        //     foot();
-        // }
-        //  rotate([0, 0, 270]) {
-        //     foot();
-        // }
-
-        //motorMount();
+        // motorMount();
         
-        //bearingMount();
+        // bearingMount();
 
-        translate([0,0,3]) {
-            //Lid();
+        translate([0,0,0]) {
+            Lid();
         }
      }
+}
+
+module baseDrum(){
+    union(){
+         difference(){
+            cylinder(r=BASE_RAD,h=BASE_HEIGHT, $fn=_sideRes);
+            translate([0, 0, _hollowLengthOffset]) {
+                cylinder(r=BASE_RAD-BASE_THICKNESS, h=BASE_HEIGHT+_hollowLengthOffset, $fn=_sideRes);
+            }
+            motorMountPeg();
+            footPeg();
+            rotate([0, 0, 90]) {
+                footPeg();
+            }
+            rotate([0, 0, 180]) {
+                footPeg();
+            }
+            rotate([0, 0, 270]) {
+                footPeg();
+            }
+            rotate([0, 0, 315]) {
+                computerBoxWireHole();
+            }
+           
+        }
+
+        //underside clearance ring
+         translate([0, 0, -5]) {
+                difference(){
+                cylinder(r=BASE_RAD,h=5, $fn=_sideRes);
+                translate([0, 0, _hollowLengthOffset-6]) {
+                    cylinder(r=BASE_RAD-BASE_THICKNESS, h=BASE_HEIGHT+_hollowLengthOffset, $fn=_sideRes);
+                }
+            }
+        }
+
+        //feet arrangement
+         // radial symmetry foots
+        foot();
+        rotate([0, 0, 90]) {
+            foot();
+        }
+        rotate([0, 0, 180]) {
+            foot();
+        }
+         rotate([0, 0, 270]) {
+            foot();
+        }
+    }
 }
 
 module motorMount(){
@@ -373,57 +387,57 @@ module motorBracketPeg(){
 
 module bearingMount(){
     translate([0, 0, 5]) {
-        // difference(){
-        //     union(){
-        //         cylinder(r=(BEARING_OD/2)+1.2,h=BEARING_HEIGHT, $fn=_sideRes);
-        //         cylinder(r1=(BEARING_OD),r2=0.1,h=BASE_HEIGHT/2, $fn=3);
-        //         cylinder(r=(BEARING_OD/2)+1.2, h=MOTOR_HEIGHT-10, $fn=_sideRes);
+        difference(){
+            union(){
+                cylinder(r=(BEARING_OD/2)+1.2,h=BEARING_HEIGHT, $fn=_sideRes);
+                cylinder(r1=(BEARING_OD),r2=0.1,h=BASE_HEIGHT/2, $fn=3);
+                cylinder(r=(BEARING_OD/2)+1.2, h=MOTOR_HEIGHT-10, $fn=_sideRes);
 
-        //         translate([0, 0, MOTOR_HEIGHT-10]) {
-        //            rotate([180,0,0]){
-        //                 cylinder(r1=(BEARING_OD),r2=0.1,h=BASE_HEIGHT/4, $fn=3);
-        //            }
-        //         }
+                translate([0, 0, MOTOR_HEIGHT-10]) {
+                   rotate([180,0,0]){
+                        cylinder(r1=(BEARING_OD),r2=0.1,h=BASE_HEIGHT/4, $fn=3);
+                   }
+                }
 
-        //         translate([BEARING_OD/1.6, 0, BEARING_HEIGHT*2]) {
-        //             cylinder(r=5, h=BEARING_HEIGHT*2.2, center=true, $fn=_sideRes);
-        //         }
+                translate([BEARING_OD/1.6, 0, BEARING_HEIGHT*2]) {
+                    cylinder(r=5, h=BEARING_HEIGHT*2.2, center=true, $fn=_sideRes);
+                }
 
-        //          translate([-BEARING_OD/3.2, BEARING_OD/1.8, BEARING_HEIGHT*1.8]) {
-        //            cylinder(r=5, h=BEARING_HEIGHT*2.2, center=true, $fn=_sideRes);
-        //         }
+                 translate([-BEARING_OD/3.2, BEARING_OD/1.8, BEARING_HEIGHT*1.8]) {
+                   cylinder(r=5, h=BEARING_HEIGHT*2.2, center=true, $fn=_sideRes);
+                }
 
-        //          translate([-BEARING_OD/3.2, -BEARING_OD/1.8, BEARING_HEIGHT*1.8]) {
-        //            cylinder(r=5, h=BEARING_HEIGHT*2.2, center=true, $fn=_sideRes);
-        //         }
+                 translate([-BEARING_OD/3.2, -BEARING_OD/1.8, BEARING_HEIGHT*1.8]) {
+                   cylinder(r=5, h=BEARING_HEIGHT*2.2, center=true, $fn=_sideRes);
+                }
 
-        //     }
+            }
 
-        //     translate([0, 0, .1]) {
-        //          cylinder(r=(BEARING_OD/2),h=BEARING_HEIGHT+35, $fn=_sideRes);
-        //     }
+            translate([0, 0, .1]) {
+                 cylinder(r=(BEARING_OD/2),h=BEARING_HEIGHT+35, $fn=_sideRes);
+            }
            
 
-        //     translate([BEARING_OD/1.6, 0, BEARING_HEIGHT*1.8]) {
-        //          boltAndCaptiveNut();
-        //     }
+            translate([BEARING_OD/1.6, 0, BEARING_HEIGHT*1.8]) {
+                 boltAndCaptiveNut();
+            }
 
-        //    translate([-BEARING_OD/3.2, BEARING_OD/1.8, BEARING_HEIGHT*1.8]) {
-        //         rotate([0, 0, -60]) {
-        //                 boltAndCaptiveNut();
-        //         }
-        //     }
+           translate([-BEARING_OD/3.2, BEARING_OD/1.8, BEARING_HEIGHT*1.8]) {
+                rotate([0, 0, -60]) {
+                        boltAndCaptiveNut();
+                }
+            }
 
-        //      translate([-BEARING_OD/3.2, -BEARING_OD/1.8, BEARING_HEIGHT*1.8]) {
-        //         rotate([0, 0, 60]) {
-        //                 boltAndCaptiveNut();
-        //         }
-        //     }
-        // }
+             translate([-BEARING_OD/3.2, -BEARING_OD/1.8, BEARING_HEIGHT*1.8]) {
+                rotate([0, 0, 60]) {
+                        boltAndCaptiveNut();
+                }
+            }
+        }
 
-        // translate([0, 0, 75]) {
+        translate([0, 0, 40]) {
              baseBearingBracket();
-        // }
+        }
     }
 }
 

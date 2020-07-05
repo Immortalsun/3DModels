@@ -118,10 +118,10 @@ main();
 module main(){
     translate([wristMountXTrans, wristMountYTrans, wristMountZTrans]){
         union(){
-            //  wristMountBase();
-            //  wristMountServoHolder();
-            //  wristMountBearingHolder();
-             wristMountAttachmentPlatform();
+            wristMountBase();
+            wristMountServoHolder();
+            wristMountBearingHolder();
+            wristMountAttachmentPlatform();
         }
     }
 }
@@ -138,10 +138,10 @@ module wristMountAttachmentPlatform(){
         wristMountBearingSidePlatformMount();
 
         //servo attachment side
-        //wristMountServoSidePlatformMount();
+        wristMountServoSidePlatformMount();
 
         //connecting bridge between servo and bearing sides
-        //wristMountBridgeConnector();
+        wristMountBridgeConnector();
 
     }
 }
@@ -225,7 +225,11 @@ module wristMountBearingSidePlatformMount(){
      union(){
             translate([-SERVO_HEIGHT+bearingHeight*2, bearingOR-1.5, bearingOR+1.5]) {
                 rotate([0, 90, 0]) {
-                    cylinder(r=bearingIR, h=bearingHeight+10, center=true, $fn=_sideRes);
+                    union(){
+                        cylinder(r=bearingIR, h=bearingHeight+10, center=true, $fn=_sideRes);
+                        cylinder(r1=bearingIR+2, r2 = bearingIR-1.5, h=bearingHeight, center=true, $fn=_sideRes);
+                    }
+                   
                 }
             }
 

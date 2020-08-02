@@ -118,9 +118,9 @@ main();
 module main(){
     translate([wristMountXTrans, wristMountYTrans, wristMountZTrans]){
         union(){
-            wristMountBase();
-            wristMountServoHolder();
-            wristMountBearingHolder();
+            // wristMountBase();
+            // wristMountServoHolder();
+            // wristMountBearingHolder();
             wristMountAttachmentPlatform();
         }
     }
@@ -135,10 +135,10 @@ module wristMountAttachmentPlatform(){
     bearingHeight = 7;
     union(){
         //bearing attachment side
-        wristMountBearingSidePlatformMount();
+        //wristMountBearingSidePlatformMount();
 
         //servo attachment side
-        wristMountServoSidePlatformMount();
+        //wristMountServoSidePlatformMount();
 
         //connecting bridge between servo and bearing sides
         wristMountBridgeConnector();
@@ -219,7 +219,7 @@ module wristMountBearingSidePlatformMount(){
     mountWidth = SERVO_HEIGHT+servoHornHeight*2;
     mountLength = SERVO_HEIGHT/3.5;
     mountHeight = servoHornBaseRadius*2.5;
-    bearingIR = 3.97;
+    bearingIR = 4.01;
     bearingOR = 11.2;
     bearingHeight = 7;
      union(){
@@ -334,14 +334,13 @@ module wristMountBridgeConnector(){
             translate([-mountWidth/1.67, 0, mountHeight+14]) {
                 difference(){
                     union(){
-                            cube([8, mountWidth+3, mountHeight-10], center=true);
-                            translate([0, 0, 6]) {
-                                cube([8, mountWidth+3, 11],center=true);
-                            }
+                        cube([8, mountWidth+3, mountHeight-10], center=true);
+                        translate([0, 0, 6]) {
+                            cube([8, mountWidth+3, 11],center=true);
+                        }
                     }
-                    
-                    translate([0, 0, -5]) {
-                            cube([5.5,mountWidth+.5, mountHeight-5], center=true);
+                    translate([0, 0, -1]) {
+                        cube([5.5,mountWidth+.5, mountHeight-5], center=true);
                     }
 
                     translate([0, 0, -.6]) {
@@ -373,7 +372,7 @@ module wristMountBridgeConnector(){
                                 cube([8, mountWidth+3, 11],center=true);
                             }
                     }
-                    translate([0, 0, -5]) {
+                    translate([0, 0, -1]) {
                             cube([5.5,mountWidth+.5, mountHeight-5], center=true);
                     }
 

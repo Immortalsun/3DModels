@@ -99,8 +99,19 @@ main();
 
 module main(){
     union(){
-        elbowMain();
-        //lowerArmMain();
+        difference(){
+            union(){
+                elbowMain();
+                //lowerArmMain()
+            }
+            //rail brace screw holes
+            braceEndcapScrewHole();
+
+            mirror([0, 1, 0]) {
+                braceEndcapScrewHole();
+            }
+            //end screw holes
+        }
     }
 }
 
@@ -118,7 +129,7 @@ module elbowMain(){
 
             translate([-ELBOW_ARM_BRACE_WIDTH*2,(ELBOW_ARM_BRIDGE_WIDTH/2)-(ELBOW_ARM_BRIDGE_WIDTH/2),0]){
                  elbowCentralXSupport();
-            }  
+            }
         }
     }
 }
@@ -253,79 +264,58 @@ module elbowCentralXSupport(){
     centralXBuffer = ELBOW_ARM_OUTER_LENGTH*_yAxisJoinDepth/2;
     translate([MOUNT_OUTER_LENGTH/2,-elbowMountYTrans,0]){
         difference(){
-                union(){
-                    rotate([0, 0, 60]) {
-                        union(){
-                            difference(){
-                                cube([ELBOW_ARM_OUTER_LENGTH+centralXBuffer, ELBOW_ARM_BRACE_WIDTH, ELBOW_ARM_BRACE_THIC], center=true);
-                                //hollow for brace inserts
-
-                                cube([ELBOW_ARM_OUTER_LENGTH-ELBOW_ARM_BRACE_WALL, ELBOW_ARM_BRACE_WIDTH+ELBOW_ARM_BRACE_WALL, ELBOW_ARM_BRACE_THIC-ELBOW_ARM_BRACE_WALL], center=true);
-                                //end brace
-                            }
-
-                            //endcaps
-                            translate([ELBOW_ARM_OUTER_LENGTH/2,0,0]){
-                                cylinder(r=ELBOW_ARM_BRACE_WIDTH-1.6, h=ELBOW_ARM_BRACE_THIC, $fn=_sideRes, center=true);
-                            }
-
-                            translate([-ELBOW_ARM_OUTER_LENGTH/2,0,0]){
-                                cylinder(r=ELBOW_ARM_BRACE_WIDTH-1.6, h=ELBOW_ARM_BRACE_THIC, $fn=_sideRes, center=true);
-                            }
-
-                            //end endcaps
-
-                            //triangular brace cutouts
-                            braceInterval=ELBOW_ARM_OUTER_LENGTH/3;
-                            translate([-braceInterval,0,0]){
-                                for(i=[0:2]){
-                                    translate([braceInterval*i,0,0]){
-                                      XBraceSupport(LOWER_ARM_OUTER_LENGTH, LOWER_ARM_BRACE_WIDTH, 3);
-                                    }
-                                }
-                            }
-                            //end brace cutouts
-                        }
-                    }
-                    rotate([0, 0, -60]) {
-                        union(){
-                            difference(){
-                                cube([ELBOW_ARM_OUTER_LENGTH+centralXBuffer, ELBOW_ARM_BRACE_WIDTH, ELBOW_ARM_BRACE_THIC], center=true);
-                                //hollow for brace inserts
-
-                                cube([ELBOW_ARM_OUTER_LENGTH-ELBOW_ARM_BRACE_WALL, ELBOW_ARM_BRACE_WIDTH+ELBOW_ARM_BRACE_WALL, ELBOW_ARM_BRACE_THIC-ELBOW_ARM_BRACE_WALL], center=true);
-                                //end brace
-                            }
-
-                             //endcaps
-                            translate([ELBOW_ARM_OUTER_LENGTH/2,0,0]){
-                                cylinder(r=ELBOW_ARM_BRACE_WIDTH-1.6, h=ELBOW_ARM_BRACE_THIC, $fn=_sideRes, center=true);
-                            }
-
-                            translate([-ELBOW_ARM_OUTER_LENGTH/2,0,0]){
-                                cylinder(r=ELBOW_ARM_BRACE_WIDTH-1.6, h=ELBOW_ARM_BRACE_THIC, $fn=_sideRes, center=true);
-                            }
-
-                            //end endcaps
-                           
-                            //triangular brace cutouts
-                            braceInterval=ELBOW_ARM_OUTER_LENGTH/3;
-                            translate([-braceInterval,0,0]){
-                                for(i=[0:2]){
-                                    translate([braceInterval*i,0,0]){
-                                      XBraceSupport(LOWER_ARM_OUTER_LENGTH, LOWER_ARM_BRACE_WIDTH, 3);
-                                    }
-                                }
-                            }
-                            //end brace cutouts
-                        }
+            union(){
+                rotate([0, 0, 60]) {
+                    centralXSupportBar();
                 }
-
+                rotate([0, 0, -60]) {
+                    centralXSupportBar();
+                }
                 cylinder(r=MTR_SCREW_RAD+6, h=ELBOW_ARM_BRIDGE_HEIGHT, center=true, $fn=_sideRes);
             }
-        cylinder(r=MTR_SCREW_RAD, h=ELBOW_ARM_BRIDGE_HEIGHT+10, center=true, $fn=_sideRes);
-        
+            cylinder(r=MTR_SCREW_RAD, h=ELBOW_ARM_BRIDGE_HEIGHT+10, center=true, $fn=_sideRes);
         }
+    }
+}
+
+module centralXSupportBar(){
+     centralXBuffer = ELBOW_ARM_OUTER_LENGTH*_yAxisJoinDepth/2;
+      union(){
+        difference(){
+            cube([ELBOW_ARM_OUTER_LENGTH+centralXBuffer, ELBOW_ARM_BRACE_WIDTH, ELBOW_ARM_BRACE_THIC], center=true);
+            //hollow for brace inserts
+
+            cube([ELBOW_ARM_OUTER_LENGTH-ELBOW_ARM_BRACE_WALL, ELBOW_ARM_BRACE_WIDTH+ELBOW_ARM_BRACE_WALL, ELBOW_ARM_BRACE_THIC-ELBOW_ARM_BRACE_WALL], center=true);
+            //end brace
+        }
+
+        //endcaps
+        translate([ELBOW_ARM_OUTER_LENGTH/2,0,0]){
+            difference(){
+                cylinder(r=ELBOW_ARM_BRACE_WIDTH-1.6, h=ELBOW_ARM_BRACE_THIC, $fn=_sideRes, center=true);
+                cylinder(r=MTR_SCREW_RAD+_holeRadiusOffset, h=ELBOW_ARM_BRACE_THIC+5, $fn=_sideRes, center=true);
+            }
+        }
+
+        translate([-ELBOW_ARM_OUTER_LENGTH/2,0,0]){
+            difference(){
+                cylinder(r=ELBOW_ARM_BRACE_WIDTH-1.6, h=ELBOW_ARM_BRACE_THIC, $fn=_sideRes, center=true);
+                cylinder(r=MTR_SCREW_RAD+_holeRadiusOffset, h=ELBOW_ARM_BRACE_THIC+5, $fn=_sideRes, center=true);
+            }
+        }
+
+        //end endcaps
+
+        //triangular brace cutouts
+        braceInterval=ELBOW_ARM_OUTER_LENGTH/3;
+        translate([-braceInterval,0,0]){
+            for(i=[0:2]){
+                translate([braceInterval*i,0,0]){
+                    XBraceSupport(LOWER_ARM_OUTER_LENGTH, LOWER_ARM_BRACE_WIDTH, 3);
+                }
+            }
+        }
+        //end brace cutouts
     }
 }
 
@@ -391,6 +381,16 @@ module lowerArmBridge(){
                 }
             }
         }
+    }
+}
+
+module braceEndcapScrewHole(){
+     translate([((SERVO_LENGTH/2)-7), ELBOW_ARM_BRIDGE_WIDTH/2, 0]) {
+        cylinder(r=MTR_SCREW_RAD+_holeRadiusOffset, h=ELBOW_ARM_BRACE_THIC+5, $fn=_sideRes, center=true);
+    }
+
+       translate([((SERVO_LENGTH*1.55)-7), ELBOW_ARM_BRIDGE_WIDTH/2, 0]) {
+        cylinder(r=MTR_SCREW_RAD+_holeRadiusOffset, h=ELBOW_ARM_BRACE_THIC+5, $fn=_sideRes, center=true);
     }
 }
 

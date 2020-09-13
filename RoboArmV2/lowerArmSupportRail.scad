@@ -65,6 +65,15 @@ mountBracketWidth = 3;
 mountBracketHeight = LOWER_ARM_BRACE_HT + 9.2;
 bracketFlangeWidth = 20;//mm 
 bracketFlangeHeight = 3;//mm
+//support rail constants
+railBracketLength = bracketFlangeWidth+8;
+railBracketWidth = ELBOW_ARM_BRIDGE_WIDTH-12;
+railBracketHeight = 5;
+railBracketXTrans = ELBOW_ARM_OUTER_LENGTH/2.5;
+railBracketZTrans = (LOWER_ARM_BRACE_THIC/2)+railBracketHeight-bracketFlangeHeight+1;
+magStripLength = 19.5;//mm
+magStripWidth = 6.5;//mm
+magStripHeight = 3.25;//mm
 _sideRes=200;
 //translation constants
 _yOffset = 4;
@@ -89,11 +98,6 @@ module importLowerArm(){
 }
 
 module supportRailMain(){
-    railBracketLength = bracketFlangeWidth+8;
-    railBracketWidth = ELBOW_ARM_BRIDGE_WIDTH-12;
-    railBracketHeight = 5;
-    railBracketXTrans = ELBOW_ARM_OUTER_LENGTH/2.5;
-    railBracketZTrans = (LOWER_ARM_BRACE_THIC/2)+railBracketHeight-bracketFlangeHeight+1;
     union(){
         translate([railBracketXTrans,0,railBracketZTrans]){
             union(){
@@ -102,20 +106,37 @@ module supportRailMain(){
                     //main bracket shape
                     cube([railBracketLength,railBracketWidth,railBracketHeight],center=true);
 
+                    //magnetic strip inset
+                    translate([0,railBracketWidth/6,railBracketHeight-(magStripHeight+.55)]){
+                        cube([magStripLength, magStripWidth, magStripHeight], center=true);
+                    }
+                    translate([0,-railBracketWidth/6,railBracketHeight-(magStripHeight+.55)]){
+                        cube([magStripLength, magStripWidth, magStripHeight], center=true);
+                    }
+                    //end strip inset
+
+                    //rail mount/magnet secure brace holes
+                    centralSupportRailScrewMounts();
+                    //end rail mount/magnet secure brace holes
+
                     //mount bracket inset
                     //the brackets are translated relative to the arm, they 
                     //need to be backed out from the translations in this scope
                     translate([-railBracketXTrans,0,-railBracketZTrans]){
-                        //very slight scaling to make fitting simpler
-                        scale([1,1.02,1.01]){
+                        supportRailMountBracketMain(true);
+                        mirror([0,1,0]){
                             supportRailMountBracketMain(true);
                         }
-                        mirror([0,1,0]){
-                            scale([1, 1.02, 1.01]) {
-                                supportRailMountBracketMain(true);
-                            }
-                        }
                     }
+                    //trimming for easier slide fit instead of scaling
+                    translate([0, (-railBracketWidth/2)+3, -1.567]) {
+                        cube([railBracketWidth, 5, railBracketHeight/1.5], center=true);
+                    }
+                     //trimming for easier slide fit instead of scaling
+                    translate([0, (railBracketWidth/2)-3, -1.567]) {
+                        cube([railBracketWidth, 5, railBracketHeight/1.5], center=true);
+                    }
+                    //end timming
                     //end mount bracket inset
 
                     //central hole for mounting
@@ -136,98 +157,85 @@ module supportRailMain(){
                     //endstop braces and rail points
                     translate([(railBracketLength/2)-2, 0, 4]) {
                         cube([4,railBracketWidth/2, 5], center=true);
-                        translate([-1.9,0, -1.9]){
-                            rotate([90, 0, 0]) {
-                                quarterCylinder(4, 1.5,railBracketWidth/2);
-                            }
-                        } 
+                      
                         //central brace triangle
                         translate([0, 0, 4]) {
                             rotate([0, -90, 0]) {
                                 difference(){
-                                     cylinder(r=10, h=railBracketHeight-1, center=true, $fn=3);
-                                     translate([6.5, 0, 0]){
-                                         cube([7,25,5],center=true);
-                                     } 
+                                     cylinder(r=20, h=railBracketHeight-1, center=true, $fn=3);
+                                     translate([11.5, 0, 0]){
+                                         cube([20,25,20],center=true);
+                                     }
+                                     //piston pass through
+                                    translate([2, 0, 0]) {
+                                        cylinder(r=4, h=railBracketHeight, center=true, $fn=_sideRes); 
+                                    }
                                 }
                                
                             }
                         }
-                        //side triangles
-                        translate([0, (railBracketWidth/2)/4, 4]) {
-                            rotate([0, -90, 0]) {
-                                difference(){
-                                    cylinder(r=5, h=railBracketHeight-1, center=true, $fn=3);
-                                    translate([6.5, 0, 0]){
-                                        cube([7,25,5],center=true);
-                                    } 
-                                }
-                            }
-                        }
-                        translate([0, -(railBracketWidth/2)/4, 4]) {
-                            rotate([0, -90, 0]) {
-                                 difference(){
-                                    cylinder(r=5, h=railBracketHeight-1, center=true, $fn=3);
-                                    translate([6.5, 0, 0]){
-                                        cube([7,25,5],center=true);
-                                    } 
-                                }
-                            }
-                        }
-                        //end side triangles
+                        //end central brace triangle
                     }
                      translate([-(railBracketLength/2)+2, 0, 4]) {
                         cube([4,railBracketWidth/2, 5], center=true);
-                        translate([1.9,0, -1.9]){
-                            rotate([90, 0, 0]) {
-                                quarterCylinder(1, 1.5,railBracketWidth/2);
-                            }
-                        } 
                         //central brace triangle
                         translate([0, 0, 4]) {
                             rotate([0, -90, 0]) {
                                 difference(){
-                                     cylinder(r=10, h=railBracketHeight-1, center=true, $fn=3);
-                                     translate([6.5, 0, 0]){
-                                         cube([7,25,5],center=true);
+                                     cylinder(r=20, h=railBracketHeight-1, center=true, $fn=3);
+                                     translate([11.5, 0, 0]){
+                                         cube([20,25,20],center=true);
                                      } 
                                 }
-                               
                             }
                         }
-                        //side triangles
-                        translate([0, (railBracketWidth/2)/4, 4]) {
-                            rotate([0, -90, 0]) {
-                                difference(){
-                                    cylinder(r=5, h=railBracketHeight-1, center=true, $fn=3);
-                                    translate([6.5, 0, 0]){
-                                        cube([7,25,5],center=true);
-                                    } 
-                                }
-                            }
-                        }
-                        translate([0, -(railBracketWidth/2)/4, 4]) {
-                            rotate([0, -90, 0]) {
-                                 difference(){
-                                    cylinder(r=5, h=railBracketHeight-1, center=true, $fn=3);
-                                    translate([6.5, 0, 0]){
-                                        cube([7,25,5],center=true);
-                                    } 
-                                }
-                            }
-                        }
-                        //end side triangles
+                        //end central brace triangle
                     }
                     //end endstop braces and rail points
-                    
-                    //rail arrangement
-                    
                 }
                 //end rail and piston attachment
             }
+
+            //rail arrangement
+            //supportRailCentralRailBracket();
         }
     }
+}
 
+module centralSupportRailScrewMounts(){
+    translate([-railBracketLength/4,railBracketWidth/3.8,0]){
+        cylinder(r=MTR_SCREW_RAD, h=railBracketHeight+5, center=true, $fn=_sideRes);
+    }
+
+    translate([railBracketLength/4,-railBracketWidth/3.8,0]){
+        cylinder(r=MTR_SCREW_RAD, h=railBracketHeight+5, center=true, $fn=_sideRes);
+    }
+
+    translate([railBracketLength/4,railBracketWidth/3.8,0]){
+        cylinder(r=MTR_SCREW_RAD, h=railBracketHeight+5, center=true, $fn=_sideRes);
+    }
+
+    translate([-railBracketLength/4,-railBracketWidth/3.8,0]){
+        cylinder(r=MTR_SCREW_RAD, h=railBracketHeight+5, center=true, $fn=_sideRes);
+    }
+}
+
+module supportRailCentralRailBracket(){
+    difference(){
+        union(){
+            translate([0,railBracketWidth/3.8,3.55]){
+                cube([magStripLength, magStripWidth, 2], center=true);
+            }
+            translate([0,-railBracketWidth/3.8,4]){
+                cube([magStripLength, magStripWidth, 2], center=true);
+            }
+        }
+        
+        translate([0,0,1]){
+             centralSupportRailScrewMounts();
+        }
+       
+    }
 }
 
 module supportRailMountBracketMain(isInset){
@@ -317,8 +325,8 @@ module supportBracketFlange(isTop, isInset){
                     }
                 }
                  //centeral point trim
-                translate([0,-bracketFlangeWidth-9,0]){
-                    cube([10,10,20], center=true);
+                translate([0,-bracketFlangeWidth-4.15,0]){
+                    cube([20,15,20], center=true);
                 }
                 //end trim
             }
@@ -386,8 +394,8 @@ module supportBracketFlange(isTop, isInset){
                     }
                 }
                 //centeral point trim
-                translate([0,-bracketFlangeWidth-9,0]){
-                    cube([10,10,20], center=true);
+                translate([0,-bracketFlangeWidth-4.15,0]){
+                    cube([20,15,20], center=true);
                 }
                 //end trim
             }
@@ -401,12 +409,6 @@ module supportBracketFlange(isTop, isInset){
 module railControlMountHoles(){
     union(){
         translate([-8,-bracketFlangeWidth/2,0]){
-            rotate([0, 0, 0]){
-                cylinder(r=MTR_SCREW_RAD+.2, h=mountBracketHeight/2, center=true, $fn=_sideRes);
-            }
-        }
-
-        translate([0,(-bracketFlangeWidth/2)-10,0]){
             rotate([0, 0, 0]){
                 cylinder(r=MTR_SCREW_RAD+.2, h=mountBracketHeight/2, center=true, $fn=_sideRes);
             }

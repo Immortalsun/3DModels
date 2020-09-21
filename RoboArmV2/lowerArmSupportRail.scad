@@ -71,9 +71,11 @@ railBracketWidth = ELBOW_ARM_BRIDGE_WIDTH-12;
 railBracketHeight = 5;
 railBracketXTrans = ELBOW_ARM_OUTER_LENGTH/2.5;
 railBracketZTrans = (LOWER_ARM_BRACE_THIC/2)+railBracketHeight-bracketFlangeHeight+1;
-magStripLength = 19.5;//mm
+magStripLength = 19.2;//mm
 magStripWidth = 6.5;//mm
 magStripHeight = 3.25;//mm
+supportRailZTrans = 3.55;//3.55 - NORMAL DISTANCE
+supportRailCentralBracketLength = magStripLength+.5;
 _sideRes=200;
 //translation constants
 _yOffset = 4;
@@ -86,7 +88,10 @@ module main(){
         // mirror([0,1,0]){
         //     supportRailMountBracketMain();
         // }
-        supportRailMain();
+        //supportRailMain();
+        translate([railBracketXTrans,0,railBracketZTrans]){
+            supportRailCentralRailBracket();
+        }
         // mirror([0, 0, 1]) {
         //     supportRailMain();
         // }
@@ -115,9 +120,6 @@ module supportRailMain(){
                     }
                     //end strip inset
 
-                    //rail mount/magnet secure brace holes
-                    centralSupportRailScrewMounts();
-                    //end rail mount/magnet secure brace holes
 
                     //mount bracket inset
                     //the brackets are translated relative to the arm, they 
@@ -142,9 +144,8 @@ module supportRailMain(){
                     //central hole for mounting
                     translate([0,0,2]){
                         union(){
-                            cylinder(r=MTR_SCREW_COUNTERSINK_RAD, h=3, center=true, $fn=_sideRes);
                             translate([0,0,0]){
-                                cylinder(r=MTR_SCREW_RAD, h=15, center=true, $fn=_sideRes);
+                                cylinder(r=MTR_SCREW_RAD+.2, h=15, center=true, $fn=_sideRes);
                             }
                         }
                     }
@@ -197,44 +198,176 @@ module supportRailMain(){
             }
 
             //rail arrangement
-            //supportRailCentralRailBracket();
+            // translate([0,0,0]){
+            //      supportRailCentralRailBracket();
+            // }
         }
-    }
-}
-
-module centralSupportRailScrewMounts(){
-    translate([-railBracketLength/4,railBracketWidth/3.8,0]){
-        cylinder(r=MTR_SCREW_RAD, h=railBracketHeight+5, center=true, $fn=_sideRes);
-    }
-
-    translate([railBracketLength/4,-railBracketWidth/3.8,0]){
-        cylinder(r=MTR_SCREW_RAD, h=railBracketHeight+5, center=true, $fn=_sideRes);
-    }
-
-    translate([railBracketLength/4,railBracketWidth/3.8,0]){
-        cylinder(r=MTR_SCREW_RAD, h=railBracketHeight+5, center=true, $fn=_sideRes);
-    }
-
-    translate([-railBracketLength/4,-railBracketWidth/3.8,0]){
-        cylinder(r=MTR_SCREW_RAD, h=railBracketHeight+5, center=true, $fn=_sideRes);
     }
 }
 
 module supportRailCentralRailBracket(){
     difference(){
         union(){
-            translate([0,railBracketWidth/3.8,3.55]){
-                cube([magStripLength, magStripWidth, 2], center=true);
+            //magnet stabilizer and base plate
+            translate([0,0,supportRailZTrans]){
+                //central mount
+                union(){
+                    difference(){
+                        cube([supportRailCentralBracketLength, magStripWidth+3, 2], center=true);
+                        //central screw mount
+                        cylinder(r=MTR_SCREW_RAD+.2, h=2.5, center=true, $fn=_sideRes);
+                        translate([0,0,.7]){
+                            cylinder(r=MTR_SCREW_COUNTERSINK_RAD, h=2.5, center=true, $fn=_sideRes);
+                        }
+                        //end central screw mount
+                    }
+                    //right triangles magnet taper support
+                    translate([(-magStripLength/2)-.25,magStripWidth-1.75,-1]){
+                        rotate([90,0,90]){
+                            triangle(2,2.5,supportRailCentralBracketLength);
+                        }
+                    }
+
+                    translate([(magStripLength/2)+.25,-magStripWidth+1.75,-1]){
+                        rotate([90,0,-90]){
+                            triangle(2,2.5,supportRailCentralBracketLength);
+                        }
+                    }
+                    //end taper support
+                }
+                //end central mount
             }
-            translate([0,-railBracketWidth/3.8,4]){
-                cube([magStripLength, magStripWidth, 2], center=true);
+
+            translate([0,(magStripWidth*2)+3.65,supportRailZTrans]){
+                //right hand side (from positive quadrant perspective)
+               outerBacketSupportEdge();
+                //end right hand side
+            }
+
+             translate([0,-(magStripWidth*2)-3,supportRailZTrans]){
+                 //left hand side
+                 mirror([0, 1, 0]) {
+                      outerBacketSupportEdge();
+                 }
+                //end left hand side
+            }
+            //end magnet stabilizer and base plate
+            //triangle brace and central rail
+            
+            railHeight = 20;
+            translate([0,0,supportRailZTrans-railHeight/2]){
+                 //central rail cylinder
+                difference(){
+                    union(){
+                        translate([0,0,railHeight]){
+                            rotate([0, 90, 0]) {
+                                cylinder(r=4, h=supportRailCentralBracketLength, center=true, $fn=_sideRes);
+                            }
+
+                            //support cylinders
+                            translate([-4,0,-5]){
+                                rotate([0, 45, 0]) {
+                                    cylinder(r=1.2, h=(supportRailCentralBracketLength/2)+2.5, center=true, $fn=_sideRes);
+                                }
+                                translate([-2, 0, 2]) {
+                                    rotate([0, -45, 0]) {
+                                        cylinder(r=1.2, h=(supportRailCentralBracketLength/2)/1.8, center=true, $fn=_sideRes);
+                                    }
+                                }
+                            
+                            }
+                            translate([4,0,-5]){
+                                rotate([0, -45, 0]) {
+                                    cylinder(r=1.2, h=(supportRailCentralBracketLength/2)+2.5, center=true, $fn=_sideRes);
+                                }
+                                translate([2, 0, 2]) {
+                                    rotate([0, 45, 0]) {
+                                        cylinder(r=1.2, h=(supportRailCentralBracketLength/2)/1.8, center=true, $fn=_sideRes);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //central screw pass through
+                    translate([0,0,railHeight]){
+                        cylinder(r=2.9, h=25, center=true, $fn=_sideRes);
+                    }
+
+                }
+                //end central rail cylinder
+                 //rail outside braces
+                translate([0, 8, (railHeight-5)]) {
+                    railOutsideHypotenuseBrace();
+                }
+                translate([0, -8, (railHeight-5)]) {
+                    mirror([0,1,0]){
+                        railOutsideHypotenuseBrace();
+                    }
+                }
+                //end outside braces
+                //central vertical brace
+                translate([0,0,14]){
+                    difference(){
+                        cube([supportRailCentralBracketLength, 2.5, 10], center=true);
+                        cube(size=[supportRailCentralBracketLength-2, 3, 20], center=true);
+                    }
+                }
+                //end central vertical brace
+
+                //extra support V braces
+                translate([0,-4,12.6]){
+                    rotate([45, 0, 0]) {
+                         difference(){
+                            cube([supportRailCentralBracketLength, 2.5, 7.5], center=true);
+                            cube(size=[supportRailCentralBracketLength-2, 3, 20], center=true);
+                        }
+                    }
+                }
+                mirror([0,1,0]){
+                    translate([0,-4,12.6]){
+                        rotate([45, 0, 0]) {
+                            difference(){
+                                cube([supportRailCentralBracketLength, 2.5, 7.5], center=true);
+                                cube(size=[supportRailCentralBracketLength-2, 3, 20], center=true);
+                            }
+                        }
+                    }
+                }
+                //end extra support V braces
+
+            }
+          
+            //end triangle brace and central rail
+        }      
+    }
+}
+
+module railOutsideHypotenuseBrace(){
+    rotate([55, 0, 0]) {
+            difference(){
+                cube([supportRailCentralBracketLength, 2.5, 17.5], center=true);
+                cube(size=[supportRailCentralBracketLength-3, 3, 20], center=true);
+                translate([0, 0, -10]) {
+                    rotate([-55,0,0]){
+                        cube([supportRailCentralBracketLength+1,4,1],center=true);
+                    }
+                }
             }
         }
-        
-        translate([0,0,1]){
-             centralSupportRailScrewMounts();
+}
+
+module outerBacketSupportEdge(){
+    union(){
+        translate([0, 0, 1]) {
+            cube([supportRailCentralBracketLength, magStripWidth/2, 4], center=true);
         }
-       
+        //right hand triangle taper
+        translate([(magStripLength/2)+.25,-magStripWidth/4,-1]){
+            rotate([90,0,-90]){
+                triangle(2,2.5,supportRailCentralBracketLength);
+            }
+        }
+        //end right hand triangle taper
     }
 }
 
@@ -465,5 +598,23 @@ module quarterCylinder(quadrant = 1, radius = 5, height = 15){
             }
         }
         
+    }
+}
+
+/**
+ * Standard right-angled triangle
+ *
+ * @param number  o_len  Length of the opposite side
+ * @param number  a_len  Length of the adjacent side
+ * @param number  depth  How wide/deep the triangle is in the 3rd dimension
+ * @param boolean center Whether to center the triangle on the origin
+ * @todo a better way ?
+ */
+module triangle(o_len, a_len, depth, center=false)
+{
+    centroid = center ? [-a_len/3, -o_len/3, -depth/2] : [0, 0, 0];
+    translate(centroid) linear_extrude(height=depth)
+    {
+        polygon(points=[[0,0],[a_len,0],[0,o_len]], paths=[[0,1,2]]);
     }
 }

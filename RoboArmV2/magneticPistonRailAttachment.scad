@@ -83,7 +83,7 @@ capRadius = 5.4;
 
 
 //translation constants
-capZHeightTrans = 13.3;//mm
+capZHeightTrans = 11.3;//mm
 capXRotationDegree = 0;
 capYRotationDegree = 0;
 capZRotationDegree = 0;
@@ -133,9 +133,9 @@ module magneticAttachementMain(){
 
 module capMountingBase(){
     union(){
-        cylinder(r=capRadius, h=5, center=true, $fn=6);
+        cylinder(r=capRadius, h=3, center=true, $fn=6);
         //rounded tip
-        translate([0, 0, (capRadius/2)-.2]) {
+        translate([0, 0, (capRadius/2)-1.5]) {
             difference(){
                 sphere(r=capRadius-.75, $fn=_sideRes);
                 translate([0,0,(-capRadius)]){
@@ -144,21 +144,24 @@ module capMountingBase(){
             }
         }
         //end rounded tip
+
+        //join with YBrace
+        translate([0, 5, 5]) {
+            rotate([-45, 0, 0]) {
+                cylinder(r=3, h=8, center=true, $fn=_sideRes);
+            }
+        }
+        //end join
     }
 }
 
 module railMountYBrace(){
+    yMountZTrans = 2.5;
+    yMountYTrans = 0;
     union(){
-        translate([0,4,6.5]){
+        translate([0,yMountYTrans,yMountZTrans]){
             //y base attachment
-            rotate([-45, 0, 0]){
-                union(){
-                     cylinder(r=3.2, h=15, center=true, $fn=_sideRes);
-                     translate([0, 0, 7.5]){
-                         sphere(r=3.2, $fn=_sideRes);
-                     } 
-                }
-            }
+        
             //end base attach
             //y brace main join shape
             translate([0, 14, 5.8]){
@@ -176,16 +179,26 @@ module railMountYBrace(){
             }
             //end y brace main join shape
             //left magnetic mounting
-            translate([(centralRailRadius)+(YMountThickness/2), 0, 0]){
-                YBraceMagnetMount();
-               
+            yExtensionLength = 4;
+            translate([(centralRailRadius)+(YMountThickness/2), yExtensionLength, 0]){
+                union(){
+                    translate([0, (YMountThickness+centralRailRadius*2)-(yExtensionLength/2)+.2, 5.8]){
+                        cube([YMountThickness,yExtensionLength,YMountThickness], center=true);
+                    } 
+                    YBraceMagnetMount();
+                }
             } 
             //end left magnetic mounting
             //right magnetic mounting
-            translate([-(centralRailRadius)-(YMountThickness/2),0,0]){
+            translate([-(centralRailRadius)-(YMountThickness/2),yExtensionLength,0]){
                 union(){
                     mirror([1, 0, 0]) {
-                         YBraceMagnetMount();
+                          union(){
+                            translate([0, (YMountThickness+centralRailRadius*2)-(yExtensionLength/2)+.2, 5.8]){
+                                cube([YMountThickness,yExtensionLength,YMountThickness], center=true);
+                            } 
+                            YBraceMagnetMount();
+                        }
                     }
                 }
             }
@@ -195,21 +208,23 @@ module railMountYBrace(){
 }
 
 module YBraceMagnetMount(){
-    fullSlotMagnetWidth = 4.85;//mm
-    fullSlotMagnetLength = 8;//mm
-    magnetSlotWidth = 1.5;//mm
-    slotMagnetFaceLength = 6.38;//mm
-    slotMagnetHeight = 6.38;//mm
+    fullSlotMagnetWidth = 5.05;//mm
+    fullSlotMagnetLength = 8.35;//mm
+    magnetSlotWidth = 1.7;//mm
+    slotMagnetFaceLength = 6.5;//mm
+    slotMagnetHeight = 6.8;//mm
     magnetSlotLength = (fullSlotMagnetLength-slotMagnetFaceLength)/2;//mm
 
-    translate([1, 16.5, 5.8]) {
+    translate([1, 16, 5.8]) {
         difference(){
             cube([(centralRailRadius+3), centralRailRadius+2, fullSlotMagnetLength+1.5], center=true);
             //magnet stand-in
             translate([.5, .8, 0]) {
                 union(){
                     cube([slotMagnetFaceLength,fullSlotMagnetWidth, slotMagnetHeight], center=true);
-                    cube([slotMagnetHeight, magnetSlotWidth, fullSlotMagnetLength], center=true);
+                    //slot cut out
+                    cube([slotMagnetFaceLength, magnetSlotWidth, fullSlotMagnetLength], center=true);
+                    //end slot cut out
                 }
             }
             //end magnet stand-in
@@ -218,18 +233,18 @@ module YBraceMagnetMount(){
        //taper join triangle set
         union(){
             //upper triangle taper join
-            translate([-3.48, -2.99, 2.5]){
+            translate([-3.5, -2.99, 2.5]){
                 rotate([180, -90, 0]) {
-                    triangle((centralRailRadius+3)-5,(centralRailRadius+3)-4.75,5);
+                    triangle(centralRailRadius-2,(centralRailRadius+3)-4.55,5);
                 }
             } 
             //end upper taper join
 
             //lower taper join
             mirror([0,0,1]){
-                translate([-3.48, -2.99, 2.5]){
+                translate([-3.5, -2.99, 2.5]){
                     rotate([180, -90, 0]) {
-                        triangle((centralRailRadius+3)-5,(centralRailRadius+3)-4.75,5);
+                        triangle(centralRailRadius-2,(centralRailRadius+3)-4.55,5);
                     }
                 } 
             }
@@ -243,15 +258,15 @@ module YBraceMagnetMount(){
                     }
                 } 
                 //edge trimming 
-                translate([0,-4.5,4.185]){
-                    rotate([-41.55, 0, 0]){
+                translate([0,-4.5,4.3]){
+                    rotate([-39, 0, 0]){
                         cube([fullSlotMagnetLength, 1.5, 3], center=true);
                     } 
                 }
 
                 mirror([0,0,1]){
-                     translate([0,-4.5,4.185]){
-                        rotate([-41.5, 0, 0]){
+                     translate([0,-4.5,4.3]){
+                        rotate([-39, 0, 0]){
                             cube([fullSlotMagnetLength, 1.5, 3], center=true);
                         } 
                     }

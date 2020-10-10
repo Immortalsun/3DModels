@@ -83,7 +83,7 @@ capRadius = 5.4;
 
 
 //translation constants
-capZHeightTrans = 11.3;//mm
+capZHeightTrans =10.5;//mm
 capXRotationDegree = 0;
 capYRotationDegree = 0;
 capZRotationDegree = 0;
@@ -133,22 +133,34 @@ module magneticAttachementMain(){
 
 module capMountingBase(){
     union(){
-        cylinder(r=capRadius, h=3, center=true, $fn=6);
-        //rounded tip
-        translate([0, 0, (capRadius/2)-1.5]) {
-            difference(){
-                sphere(r=capRadius-.75, $fn=_sideRes);
-                translate([0,0,(-capRadius)]){
-                    cube(capRadius*2, center=true);
-                }
-            }
-        }
-        //end rounded tip
-
         //join with YBrace
-        translate([0, 5, 5]) {
-            rotate([-45, 0, 0]) {
-                cylinder(r=3, h=8, center=true, $fn=_sideRes);
+        translate([0, 0, -2.2]) {
+            union(){
+                 difference(){
+                    cylinder(r=6, h=5, center=true, $fn=_sideRes);
+                    cylinder(r=capRadius-1, h=8, center=true, $fn=_sideRes);
+                }
+                //left triange join
+                translate([capRadius-3.2, capRadius, -2.5]) {
+                    rotate([0,0,-45]){
+                        triangle(5,5,5);
+                    }
+                }
+                //end left triange join
+                //right triangle join
+                translate([-capRadius+3.2, capRadius, -2.5]) {
+                    rotate([0,0,-225]){
+                        triangle(5,5,5);
+                    }
+                }
+                //end right triangle join
+                //lower (underneath Y) triangle join
+                translate([-capRadius/2, capRadius-1, -2]) {
+                    rotate([0,90,0]){
+                        triangle(5,5,5.4);
+                    }
+                }
+                //end lower join
             }
         }
         //end join
@@ -156,7 +168,7 @@ module capMountingBase(){
 }
 
 module railMountYBrace(){
-    yMountZTrans = 2.5;
+    yMountZTrans = -8;
     yMountYTrans = 0;
     union(){
         translate([0,yMountYTrans,yMountZTrans]){
@@ -179,24 +191,52 @@ module railMountYBrace(){
             }
             //end y brace main join shape
             //left magnetic mounting
-            yExtensionLength = 4;
-            translate([(centralRailRadius)+(YMountThickness/2), yExtensionLength, 0]){
+            yExtensionLength = 5;
+            translate([(centralRailRadius)+(YMountThickness/2)+3, yExtensionLength, 0]){
                 union(){
                     translate([0, (YMountThickness+centralRailRadius*2)-(yExtensionLength/2)+.2, 5.8]){
                         cube([YMountThickness,yExtensionLength,YMountThickness], center=true);
-                    } 
+                    }
+                    //X-offset join triangles
+                    union(){
+                        translate([-1.5, yExtensionLength+3.2, 3.3]){
+                            rotate([0, 0, 270]){
+                                triangle(4,3.3,YMountThickness);
+                            } 
+                        }
+                         translate([-1.5, (centralRailRadius)+YMountThickness+.05, 3.3]){
+                            rotate([0, 0, 90]){
+                                triangle(4,3.3,YMountThickness);
+                            } 
+                        }  
+                    }
+                    //end X-offset join triangles 
                     YBraceMagnetMount();
                 }
             } 
             //end left magnetic mounting
             //right magnetic mounting
-            translate([-(centralRailRadius)-(YMountThickness/2),yExtensionLength,0]){
+            translate([-(centralRailRadius)-(YMountThickness/2)-3,yExtensionLength,0]){
                 union(){
                     mirror([1, 0, 0]) {
                           union(){
                             translate([0, (YMountThickness+centralRailRadius*2)-(yExtensionLength/2)+.2, 5.8]){
                                 cube([YMountThickness,yExtensionLength,YMountThickness], center=true);
-                            } 
+                            }
+                            //X-offset join triangles
+                             union(){
+                                translate([-1.5, yExtensionLength+3.2, 3.3]){
+                                    rotate([0, 0, 270]){
+                                        triangle(4,3.3,YMountThickness);
+                                    } 
+                                }
+                                translate([-1.5, (centralRailRadius)+YMountThickness+.05, 3.3]){
+                                    rotate([0, 0, 90]){
+                                        triangle(4,3.3,YMountThickness);
+                                    } 
+                                }  
+                            }
+                            //end X-offset join triangles  
                             YBraceMagnetMount();
                         }
                     }

@@ -18,7 +18,7 @@ FLANGE_LENGTH = 10;//mm
 MOTOR_WIDTH = 42.3;//mm
 MOTOR_HEIGHT = 34;//mm //smaller NEMA motor, other height is 38.5
 MOTOR_SHAFT_THRU_RADIUS = 11;//mm
-MOTOR_SHAFT_RADIUS = 2.5;//mm
+MOTOR_SHAFT_RADIUS = 3.15;//mm
 
 //motor screwhole dimensions
 MTR_SCREW_RAD = 1.55;//mm
@@ -101,14 +101,14 @@ module main(){
     union(){
         difference(){
             union(){
-                elbowMain();
-                //lowerArmMain()
+                //elbowMain();
+                lowerArmMain();
             }
             //rail brace screw holes
-            braceEndcapScrewHole();
+            //braceEndcapScrewHole();
 
             mirror([0, 1, 0]) {
-                braceEndcapScrewHole();
+                //braceEndcapScrewHole();
             }
             //end screw holes
         }
@@ -253,7 +253,7 @@ module bearingMount(){
     difference(){
         cylinder(r=(BEARING_OD/2)+3.2,h=BEARING_HEIGHT+1.5, $fn=_sideRes,center=true);
         translate([0, 0, 2.]) {
-                cylinder(r=(BEARING_OD/2),h=BEARING_HEIGHT, $fn=_sideRes, center=true);
+                cylinder(r=(BEARING_OD/2)+.2,h=BEARING_HEIGHT, $fn=_sideRes, center=true);
         }
 
         cylinder(r=AXLE_RAD+.2, h=BEARING_HEIGHT+10, $fn=_sideRes, center=true);
@@ -365,7 +365,7 @@ module lowerArmBridge(){
                 for(i=[0:2]){
                     translate([0,YAxlisAlignedScrewHoleInterval*i,0]){
                         rotate([0,90,0]){
-                            cylinder(r=MTR_SCREW_RAD, h=LOWER_ARM_BRIDGE_HEIGHT+5, $fn=_sideRes, center=true);
+                            cylinder(r=MTR_SCREW_RAD+_holeRadiusOffset, h=LOWER_ARM_BRIDGE_HEIGHT+5, $fn=_sideRes, center=true);
                         }
                     }
                 }
@@ -375,7 +375,7 @@ module lowerArmBridge(){
                 for(i=[0:2]){
                     translate([0, 0, ZAxisAlignedScrewHoleInterval*i]) {
                         rotate([0,90,0]){
-                            cylinder(r=MTR_SCREW_RAD, h=LOWER_ARM_BRIDGE_HEIGHT+5, $fn=_sideRes, center=true);
+                            cylinder(r=MTR_SCREW_RAD+_holeRadiusOffset, h=LOWER_ARM_BRIDGE_HEIGHT+5, $fn=_sideRes, center=true);
                         }
                     }
                 }
@@ -445,9 +445,9 @@ module centralXSupport(){
                         }
                 }
 
-                cylinder(r=MTR_SCREW_RAD+6, h=LOWER_ARM_BRIDGE_HEIGHT, center=true, $fn=_sideRes);
+                cylinder(r=MTR_SCREW_RAD+5.5, h=LOWER_ARM_BRIDGE_HEIGHT, center=true, $fn=_sideRes);
             }
-        cylinder(r=MTR_SCREW_RAD, h=LOWER_ARM_BRIDGE_HEIGHT+10, center=true, $fn=_sideRes);
+        //cylinder(r=MTR_SCREW_RAD, h=LOWER_ARM_BRIDGE_HEIGHT+10, center=true, $fn=_sideRes);
         
         }
     }
@@ -608,22 +608,22 @@ module moterAxleFlangeStandIn(cutCylinderHt = 5){
         cylinder(r=flangeRad, h=3, center=true, $fn=_sideRes);
 
         cylinder(r=MOTOR_SHAFT_RADIUS+_holeRadiusOffset, h=cutCylinderHt, center=true, $fn=_sideRes);
-
+        radiusOffset = 6;
         //screwHoles form a 12mm square, so 6mm from center
-        translate([6, 6, 0]){
-            cylinder(r=MTR_SCREW_RAD, h=cutCylinderHt, center=true, $fn=_sideRes);
+        translate([radiusOffset, radiusOffset, 0]){
+            cylinder(r=MTR_SCREW_RAD+_holeRadiusOffset, h=cutCylinderHt, center=true, $fn=_sideRes);
         } 
 
-        translate([-6, 6, 0]){
-            cylinder(r=MTR_SCREW_RAD, h=cutCylinderHt, center=true, $fn=_sideRes);
+        translate([-radiusOffset, radiusOffset, 0]){
+            cylinder(r=MTR_SCREW_RAD+_holeRadiusOffset, h=cutCylinderHt, center=true, $fn=_sideRes);
         } 
 
-        translate([6, -6, 0]){
-            cylinder(r=MTR_SCREW_RAD, h=cutCylinderHt, center=true, $fn=_sideRes);
+        translate([radiusOffset, -radiusOffset, 0]){
+            cylinder(r=MTR_SCREW_RAD+_holeRadiusOffset, h=cutCylinderHt, center=true, $fn=_sideRes);
         } 
 
-            translate([-6, -6, 0]){
-            cylinder(r=MTR_SCREW_RAD, h=cutCylinderHt, center=true, $fn=_sideRes);
+            translate([-radiusOffset, -radiusOffset, 0]){
+            cylinder(r=MTR_SCREW_RAD+_holeRadiusOffset, h=cutCylinderHt, center=true, $fn=_sideRes);
         } 
     }
 }

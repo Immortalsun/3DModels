@@ -15,10 +15,17 @@ FLANGE_WIDTH = LID_RAD*1.5;
 FLANGE_LENGTH = 10;//mm
 
 //Motor Dimensions
-MOTOR_WIDTH = 42.3;//mm
-MOTOR_HEIGHT = 34;//mm //smaller NEMA motor, other height is 38.5
-MOTOR_SHAFT_THRU_RADIUS = 11;//mm
-MOTOR_SHAFT_RADIUS = 2.5;//mm
+//NEMA 17 Dimensions
+// MOTOR_WIDTH = 42.3;//mm
+// MOTOR_HEIGHT = 34;//mm //smaller NEMA motor, other height is 38.5
+// MOTOR_SHAFT_THRU_RADIUS = 11;//mm
+// MOTOR_SHAFT_RADIUS = 2.5;//mm
+//NEMA 24 Dimensions
+MOTOR_WIDTH = 57.3;//mm
+MOTOR_HEIGHT = 56;//mm 
+MOTOR_SHAFT_THRU_RADIUS = 19.01;//mm
+MOTOR_SHAFT_RADIUS = 3.1;//mm
+//End Motor Dimensions
 
 //motor screwhole dimensions
 MTR_SCREW_RAD = 1.55;//mm
@@ -78,13 +85,14 @@ module main(){
         union(){
             //shoulderMain();
             lowerArmMain();
+            //motorStandIn();
         }
         //crossSection(50);
     }
 }
 
 module shoulderMain(){
-    difference(){
+    union(){
         union(){
              //begin main mount structure
             translate([0, 0, (MOUNT_OUTER_HEIGHT/2)+LID_HEIGHT]){

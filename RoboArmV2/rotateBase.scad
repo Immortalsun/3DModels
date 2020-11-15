@@ -56,44 +56,48 @@ module Lid(){
     screwRad = 2;
     screwCapRad = 2.6;
     screwCapZTrans = 2.6;
+    centerKeyScrewHoleTrans = 30;
     union(){
           difference(){
             cylinder(r=LID_RAD, h=LID_HEIGHT, $fn=_sideRes);
 
 
             translate([0, 0, -1]){
-               cube([36.5,36.5,15], center=true);
+               //cube([36.5,36.5,15], center=true);
+               rotate([0,0,45]){
+                    cylinder(r=25, h=15, center=true, $fn=6);
+               }
             }
 
-            translate([25, 0, 0]){
+            translate([centerKeyScrewHoleTrans, 0, 0]){
                 cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
             }
 
-            translate([-25, 0, 0]){
+            translate([-centerKeyScrewHoleTrans, 0, 0]){
                 cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
             }
 
-             translate([0, 25, 0]){
+             translate([0, centerKeyScrewHoleTrans, 0]){
                 cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
             }
 
-            translate([0, -25, 0]){
+            translate([0, -centerKeyScrewHoleTrans, 0]){
                 cylinder(r=screwRad, h=30, center=true, $fn=_sideRes);
             }
 
-            translate([25, 0, screwCapZTrans]){
+            translate([centerKeyScrewHoleTrans, 0, screwCapZTrans]){
                 cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
             }
 
-            translate([-25, 0, screwCapZTrans]){
+            translate([-centerKeyScrewHoleTrans, 0, screwCapZTrans]){
                 cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
             }
 
-             translate([0, 25, screwCapZTrans]){
+             translate([0, centerKeyScrewHoleTrans, screwCapZTrans]){
                 cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
             }
 
-            translate([0, -25, screwCapZTrans]){
+            translate([0, -centerKeyScrewHoleTrans, screwCapZTrans]){
                 cylinder(r=screwCapRad, h=3, center=true, $fn=_sideRes);
             }                     
         }
@@ -114,7 +118,7 @@ module Lid(){
 
         translate([0, 0, -10]){
             rotate([0, 90, 0]){
-                //axleFlangeMount();
+                axleFlangeMount();
             } 
         } 
 

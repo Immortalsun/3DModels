@@ -39,9 +39,10 @@ module main(){
     //wrist key for attachment to arm
     wristKey();
 
+    keyAttachmentMount();
     //begin gripper structure
     translate([gripperXTrans,gripperYTrans,gripperZTrans]){
-        gripperMain();
+       // gripperMain();
     }
 }
 
@@ -86,8 +87,42 @@ module gripperFinger(){
 
 }
 
+module keyAttachmentMount(){
+    motorHeightGap = 4;//mm
+    keyHeight = 3;
+    translate([0,0,keyHeight]){
+        difference(){
+            union(){
+                //base key attachment    
+                cylinder(r1=18.5, r2=21, h=motorHeightGap, center=true, $fn=4);
+                 translate([0, 0, keyHeight+1]) {
+                    //cylinder(r=35,h=4.5,center=true, $fn=_sideRes);
+                }
+            }
+            keyExteriorScrewMounts();
+            keyInteriorScrewMounts();
+
+            translate([0, 0, 4]) {
+                 nutLockChannel(75);
+            }
+
+             translate([0, 0, 4]) {
+                 rotate([0, 0, 90]) {
+                      nutLockChannel(75);
+                 }
+                
+            }
+           
 
 
+        }
+    }
+    
+}
+
+module nutLockChannel(length = 25){
+   cube([5.8,length,2.8], center=true);
+}
 
 module wristKey(){
     difference(){

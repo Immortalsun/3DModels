@@ -21,6 +21,10 @@ _switchPaddingWidth = 2.25;
 _keySwitchCutoutLength = 13.95; //14.05
 _keySwitchCutoutWidth = 13.95; //14.05
 
+_controlBoardLength = 102;//mm
+_controlBoardWidth = 53.5;//mm
+_controlBoardScrewHoleDiameter = 3.4;
+
 _keySpacingDist = 2; //mm between each key
 
 _plateHeight = 5;
@@ -39,11 +43,13 @@ _numBasicKeys = 5;
 main();
 
 module main(){
-    translate([2,0,_plateHeight+_keyCapShankOffsetRiserLength/4]){
-        screenKeyCap();
+    translate([0,0,_plateHeight+_keyCapShankOffsetRiserLength/4]){
+        //screenKeyCap();
     }
     
-    rowPlate(1);
+    //rowPlate(1);
+
+    controlBoardModel();
 }
 
 module screenModel(){
@@ -72,8 +78,93 @@ module screenKeyCap(){
         }
 
         translate([(_keyWidth-_keyCapShankOffsetRiserLength)/2,(_keyLength-_keyCapShankOffsetRiserWidth)/2,
-        -_keyHeight+_keyHollowingHeightOffset+_keyCapShankOffsetTowardSwitch+1]){
+        -_keyHeight+_keyHollowingHeightOffset+_keyCapShankOffsetTowardSwitch]){
                 keyCapShankConnector();
+        }
+    }
+}
+
+module controlBoardModel(){
+    screwHoleEdgeDistance = 2.5;
+     screwHoleADistFromXAxis = 14.0;
+    screwHoleADistFromYAxis = _controlBoardWidth-screwHoleEdgeDistance;
+
+    screwHoleBDistFromXAxis = 15.3;
+    screwHoleBDistFromYAxis = screwHoleEdgeDistance;
+
+    screwHoleCDistFromXAxis = 90.2;
+    screwHoleCDistFromYAxis = screwHoleEdgeDistance;
+
+    screwHoleDDistFromXAxis = 96.52;
+    screwHoleDDistFromYAxis = _controlBoardWidth-screwHoleEdgeDistance;
+    union(){
+        translate([0,6,0]){
+            difference(){
+                union(){
+                    cube(size=[_controlBoardWidth, _controlBoardLength, 2]);
+                    //screwhole standoffs
+                    translate([screwHoleADistFromYAxis,screwHoleADistFromXAxis,1]){
+                        cylinder(r=_controlBoardScrewHoleDiameter-.9, h=3, $fn=100);
+                    }
+
+                    translate([screwHoleBDistFromYAxis,screwHoleBDistFromXAxis,1]){
+                        cylinder(r=_controlBoardScrewHoleDiameter-.9, h=3, $fn=100);
+                    }
+
+                    translate([screwHoleCDistFromYAxis,screwHoleCDistFromXAxis,1]){
+                        cylinder(r=_controlBoardScrewHoleDiameter-.9, h=3, $fn=100);
+                    }
+
+                    translate([screwHoleDDistFromYAxis,screwHoleDDistFromXAxis,1]){
+                        cylinder(r=_controlBoardScrewHoleDiameter-.9, h=3, $fn=100);
+                    }
+                }
+               
+
+                //screwholes
+                translate([screwHoleADistFromYAxis,screwHoleADistFromXAxis,-1]){
+                    cylinder(r=_controlBoardScrewHoleDiameter/2, h=6, $fn=100);
+                }
+
+                translate([screwHoleBDistFromYAxis,screwHoleBDistFromXAxis,-1]){
+                    cylinder(r=_controlBoardScrewHoleDiameter/2, h=6, $fn=100);
+                }
+
+                translate([screwHoleCDistFromYAxis,screwHoleCDistFromXAxis,-1]){
+                    cylinder(r=_controlBoardScrewHoleDiameter/2, h=6, $fn=100);
+                }
+
+                translate([screwHoleDDistFromYAxis,screwHoleDDistFromXAxis,-1]){
+                    cylinder(r=_controlBoardScrewHoleDiameter/2, h=6, $fn=100);
+                }
+            }
+        }
+        
+        maxPortHeight = 15;
+        dcJackPortWidth=9.5;
+        usbPortWidth=11.5;
+        usbPortHeight=5.5;
+        dcRearOverhangLength = 3;
+        //test port alignments
+        translate([0,-dcRearOverhangLength,0]){
+            
+            difference(){
+                union(){
+                     cube(size=[_controlBoardWidth, 5, maxPortHeight]);
+                     translate([0,5,0])
+                     cube(size=[_controlBoardWidth, dcRearOverhangLength+1, 2]);
+                }
+               
+
+                translate([_controlBoardWidth-7,7,9]){
+                    rotate([90,0,0])
+                    cylinder(r=dcJackPortWidth/2, h=8, $fn=100);
+                }
+
+                translate([9,-1,4]){
+                    cube(size=[usbPortWidth, 8, usbPortHeight]);
+                }
+            }
         }
     }
 }
@@ -114,15 +205,26 @@ module keyCapShankConnector()
 module rowPlate(rowSwitches = 1){
     plateWidth = rowSwitches*(_keySpacingDist+_keyWidth);
     plateCornerPadding=6;
-    difference(){
-        cube(size=[plateWidth, _keyLength+(_keySpacingDist*2), _plateHeight]);
+    plateLength = _keyLength+(_keySpacingDist*2);
 
-        translate([plateCornerPadding, _keySpacingDist*2, 0]){
+    screenRouteCutoutDist = 2;
+    screenRouteWidth = 10;
+    screenRouteLength = 3;
+    difference(){
+        cube(size=[plateWidth, plateLength, _plateHeight]);
+
+        translate([plateCornerPadding, (plateLength/2)-(_keySwitchCutoutLength/2)-_keySpacingDist, 0]){
 
             for(i=[0:rowSwitches]){
                 if(i<rowSwitches){
                     translate([(i*_keyWidth)+_keySpacingDist,_keySpacingDist,-.5]){
+                        //key cutout
                         cube(size=[_keySwitchCutoutWidth, _keySwitchCutoutLength, 6]);
+
+                        //screen wire route
+                        translate([(_keySwitchCutoutWidth/2)-screenRouteWidth/2,(_keySwitchCutoutLength)+screenRouteCutoutDist,0]){
+                            roundedCube(size=[screenRouteWidth,screenRouteLength,6], radius=.5, apply_to="none");
+                        }
                     }
                 }
             }

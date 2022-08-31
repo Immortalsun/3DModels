@@ -1,7 +1,7 @@
 //measurements in millimeters
-_screenHeight = 2;
-_screenWidth = 19;
-_screenLength = 24;
+_screenHeight = 3;
+_screenWidth = 19.45;
+_screenLength = 24.2;
 _switchLength = 15;
 _switchWidth = 15;
 
@@ -44,12 +44,12 @@ main();
 
 module main(){
     translate([0,0,_plateHeight+_keyCapShankOffsetRiserLength/4]){
-        //screenKeyCap();
+        screenKeyCap();
     }
     
     //rowPlate(1);
 
-    controlBoardModel();
+    //controlBoardModel();
 }
 
 module screenModel(){
@@ -65,7 +65,7 @@ module screenKeyCap(){
             roundedCube(size=[_keyWidth, _keyLength, _keyHeight], radius=.4, apply_to="none");
 
             //screen cutout
-            translate([_keyWidthPadding,_keyLengthPadding,(_keyHeightPadding)+1]){
+            translate([_keyWidthPadding,_keyLengthPadding,(_keyHeightPadding)+.1]){
                 screenModel();
             }
 
@@ -140,10 +140,10 @@ module controlBoardModel(){
             }
         }
         
-        maxPortHeight = 15;
+        maxPortHeight = 20;
         dcJackPortWidth=9.5;
         usbPortWidth=11.5;
-        usbPortHeight=5.5;
+        usbPortHeight=8;
         dcRearOverhangLength = 3;
         //test port alignments
         translate([0,-dcRearOverhangLength,0]){
@@ -156,13 +156,13 @@ module controlBoardModel(){
                 }
                
 
-                translate([_controlBoardWidth-7,7,9]){
+                translate([_controlBoardWidth-8,7,12]){
                     rotate([90,0,0])
                     cylinder(r=dcJackPortWidth/2, h=8, $fn=100);
                 }
 
-                translate([9,-1,4]){
-                    cube(size=[usbPortWidth, 8, usbPortHeight]);
+                translate([11,-1,5]){
+                    roundedCube(size=[usbPortWidth, 8, usbPortHeight], radius=.4, apply_to="all");
                 }
             }
         }

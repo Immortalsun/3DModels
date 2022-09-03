@@ -19,9 +19,9 @@ _keyHollowingHeightOffset = _keyHeightPadding+.5;
 
 _keyCoverThickness = 2.5;
 _keyCoverWidth = _keyWidth+_keyCoverThickness;
-_keyCoverLength = _keyLength+_keyCoverThickness+_keyLengthOverhangOffset;
+_keyCoverLength = _keyLength+_keyCoverThickness+(_keyLengthOverhangOffset*2);
 _keyCoverHeight = _screenHeight+2;
-_keyCoverInternalFitTolerance = .25;
+_keyCoverInternalFitTolerance = .15;
 
 _keyCapHoleEdgeOffset = .55;
 
@@ -35,6 +35,7 @@ _controlBoardWidth = 53.5;//mm
 _controlBoardScrewHoleDiameter = 3.4;
 
 _m2KnurlCutoutDiameter = 3.6;//mm
+_m2KnurlCutoutHeight = 3;//mm
 
 _keySpacingDist = 2; //mm between each key
 
@@ -44,11 +45,25 @@ _keyCapShankOffsetRiserLength = 7.01; // Warning: Careful when modifying. This i
 _keyCapShankOffsetRiserWidth = 4.55; // Warning: Careful when modifying. This is a tuned value.
 _keyCapShankOffsetTowardSwitch = 3;
 
+_housingThickness = 5;
+_housingFitTolerance = .25;
+
 //constants
+_screenKeysPerRow = 1;
+_basicKeysPerRow = 0;
 _numScreenKeys = 25;
 _numBasicKeys = 5;
 
-//formulas
+//calculated values
+_plateLengthWireExtension = 3;
+_keyRowWidth = (_screenKeysPerRow+_basicKeysPerRow)*(_keySpacingDist+_keyCoverWidth); //row of X screen keys and 1 basic
+_keyRowLength = _keyLength+(_keySpacingDist*2)+_plateLengthWireExtension;
+_housingInternalHeightClearance = 10; //distance between bottom of plate and internal bottom of housing
+
+//housing calculations must include arduino plate sizing later
+_housingExternalWidth = _keyRowWidth+_housingThickness;
+_housingExternalLength = _keyRowLength+_housingThickness;
+_housingHeight = _plateHeight + _housingInternalHeightClearance;
 
 
 main();
@@ -58,14 +73,17 @@ module main(){
         //screenKeyCap();
 
         translate([(-_keyCoverThickness/2)-_keyCoverInternalFitTolerance/2,-_keyCoverThickness/2-_keyCoverInternalFitTolerance/2,5]){
-            screenKeyCapCover();
+            //screenKeyCapCover();
         }
         
     }
     
-   
+    housing();
 
-    //rowPlate(1);
+    translate([(_housingThickness/2)+_housingFitTolerance/2,(_housingThickness/2)+_housingFitTolerance/2,_housingHeight-(_plateHeight)]){
+         keyPlate(true, true, true);
+    }
+   
 
     //controlBoardModel();
 }
@@ -91,7 +109,7 @@ module screenKeyCap(){
                 trenchScreenEdgeDist = 12;
                 //resistors trench cutout
                 translate([0,trenchScreenEdgeDist-(trenchLength/2),-1]){
-                    cube(size=[_screenWidth, 7, 1.5]);
+                    cube(size=[_screenWidth, 9, 1.5]);
                 }
             }
 
@@ -118,11 +136,11 @@ module screenKeyCapCover(){
     union(){
         difference(){
             //main body
-            roundedCube(size=[_keyCoverWidth, _keyCoverLength, _keyCoverHeight], radius=.4, apply_to="zmax");
+            roundedCube(size=[_keyCoverWidth, _keyCoverLength, _keyCoverHeight], radius=.4, apply_to="all");
             //internal keycap cutout
             translate([_keyCoverThickness/2, _keyCoverThickness/2, -_keyCoverHeight+.5]){
                 roundedCube(size=[_keyWidth+_keyCoverInternalFitTolerance,
-                _keyLength+_keyCoverInternalFitTolerance+_keyLengthOverhangOffset, _keyHeight], radius=.4, apply_to="none");
+                _keyLength+_keyCoverInternalFitTolerance+(_keyLengthOverhangOffset*2), _keyHeight], radius=.4, apply_to="none");
             }
 
             displayAreaX = 12.5;
@@ -253,37 +271,120 @@ module keyCapShankConnector()
     }
 }
 
-module rowPlate(rowSwitches = 1){
-    plateWidth = rowSwitches*(_keySpacingDist+_keyWidth);
-    plateCornerPadding=6;
-    plateLengthWireExtension = 3;
-    plateLength = _keyLength+(_keySpacingDist*2)+plateLengthWireExtension;
+module housing(){
+    union(){
+        difference(){
+            roundedCube(size = [_housingExternalWidth, _housingExternalLength, _housingHeight], radius = .4, apply_to="yMax");
 
+            translate([_housingThickness/2,_housingThickness/2,_housingThickness/2]){
+                cube(size = [_keyRowWidth + _housingFitTolerance, _keyRowLength+_housingFitTolerance, _housingHeight]);
+            }
+
+             //side screw mounts
+            translate([-.1,(_keyRowLength/6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
+                rotate([0,90,0]){
+                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
+                }
+            }
+
+            translate([-.1,(_keyRowLength-6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
+                rotate([0,90,0]){
+                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
+                }
+            }
+
+            translate([_keyRowWidth + _housingFitTolerance+(_m2KnurlCutoutDiameter/2)
+            ,(_keyRowLength/6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
+                rotate([0,90,0]){
+                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
+                }
+            }
+
+            translate([_keyRowWidth + _housingFitTolerance+(_m2KnurlCutoutDiameter/2),
+            (_keyRowLength-6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
+                rotate([0,90,0]){
+                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
+                }
+            }
+        }
+        //inner shelving
+        translate([_housingThickness/2,_housingThickness/2,_housingHeight-_plateHeight]){
+            rotate([270,0,0]){
+                rightTriangle(size=[3,4,_keyRowLength+_housingFitTolerance]);
+            }
+        }
+
+          translate([(_keyRowWidth+_housingThickness/2)+_housingFitTolerance,(_keyRowLength+_housingThickness/2)+_housingFitTolerance,_housingHeight-_plateHeight]){
+                rotate([270,0,180]){
+                    rightTriangle(size=[3,4,_keyRowLength+_housingFitTolerance]);
+                }
+            }
+    }
+}
+
+module keyPlate(includeRoute = true, includeLeftScrews = true, includeRightScrews = true){
+    plateWidth = (_keySpacingDist+_keyCoverWidth);
+    plateLength = _keyLength+(_keySpacingDist*2)+_plateLengthWireExtension;
     screenRouteCutoutDist = 4.5;
     screenRouteWidth = 18;
-    screenRouteLength = 3;
-    keyYSpacingDist = _keySpacingDist - 1.5;
+    screenRouteLength = 4;
     difference(){
         cube(size=[plateWidth, plateLength, _plateHeight]);
 
-        translate([plateCornerPadding, (plateLength/2)-(_keySwitchCutoutLength/2)-_keySpacingDist, 0]){
+        translate([(plateWidth/2)-(_keySwitchCutoutWidth/2), (plateLength/2)-(_keySwitchCutoutLength/2)-_keySpacingDist, -.5]){
+            //key cutout
+            cube(size=[_keySwitchCutoutWidth, _keySwitchCutoutLength, 6]);
 
-            for(i=[0:rowSwitches]){
-                if(i<rowSwitches){
-                    translate([(i*_keyWidth)+_keySpacingDist,keyYSpacingDist,-.5]){
-                        //key cutout
-                        cube(size=[_keySwitchCutoutWidth, _keySwitchCutoutLength, 6]);
+            if(includeRoute){
+                //screen wire route
+                translate([(_keySwitchCutoutWidth/2)-screenRouteWidth/2,(_keySwitchCutoutLength)+screenRouteCutoutDist,0]){
+                    roundedCube(size=[screenRouteWidth,screenRouteLength,6], radius=.5, apply_to="none");
+                }
+            }
+        }
 
-                        //screen wire route
-                        translate([(_keySwitchCutoutWidth/2)-screenRouteWidth/2,(_keySwitchCutoutLength)+screenRouteCutoutDist,0]){
-                            roundedCube(size=[screenRouteWidth,screenRouteLength,6], radius=.5, apply_to="none");
-                        }
-                    }
+        //side screw mounts
+        if(includeLeftScrews){
+            translate([-.1,plateLength/6,(_plateHeight/2)]){
+                rotate([0,90,0]){
+                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
+                }
+            }
+
+             translate([-.1,plateLength-6,(_plateHeight/2)]){
+                rotate([0,90,0]){
+                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
+                }
+            }
+        }
+
+        if(includeRightScrews){
+              translate([plateWidth-_m2KnurlCutoutHeight+.1,plateLength/6,(_plateHeight/2)]){
+                rotate([0,90,0]){
+                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
+                }
+            }
+
+             translate([plateWidth-_m2KnurlCutoutHeight+.1,plateLength-6,(_plateHeight/2)]){
+                rotate([0,90,0]){
+                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
                 }
             }
         }
     }
+}
 
+module rightTriangle(size = [1,1,1]){
+    difference(){
+        legA = size[0];
+        legB = size[1];
+        cube(size = [size[0], size[1], size[2]]);
+        translate([legA,0,-1]){
+            rotate([0,0,45]){
+                cube(size = [size[0], size[1]+5, size[2]+5]);
+            }
+        }
+    }
 }
 
 /// Builds a cube with rounded corners

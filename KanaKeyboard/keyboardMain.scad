@@ -32,10 +32,12 @@ _keySwitchCutoutWidth = 13.95; //14.05
 
 _controlBoardLength = 102;//mm
 _controlBoardWidth = 53.5;//mm
-_controlBoardScrewHoleDiameter = 3.4;
+_controlBoardScrewHoleDiameter = 3.6;
 
 _m2KnurlCutoutDiameter = 3.6;//mm
 _m2KnurlCutoutHeight = 3;//mm
+_m2ScrewHeadDiameter = 3.7;
+
 
 _keySpacingDist = 2; //mm between each key
 
@@ -48,44 +50,53 @@ _keyCapShankOffsetTowardSwitch = 3;
 _housingThickness = 5;
 _housingFitTolerance = .25;
 
+_patchBoardWidth = 51;
+_patchBoardLength = 82;
+_patchboardHoleDist = 73.46;
+
 //constants
-_screenKeysPerRow = 1;
-_basicKeysPerRow = 0;
-_numScreenKeys = 25;
-_numBasicKeys = 5;
+_screenKeysPerRow = 5;
+_basicKeysPerRow = 1;
+_numRows = 5;
+_useFullHousing = true;
 
 //calculated values
 _plateLengthWireExtension = 3;
+_plateWidth = (_keySpacingDist+_keyCoverWidth); //single key plate width
+_plateLength = _keyLength+(_keySpacingDist*2)+_plateLengthWireExtension; //single key plate length
 _keyRowWidth = (_screenKeysPerRow+_basicKeysPerRow)*(_keySpacingDist+_keyCoverWidth); //row of X screen keys and 1 basic
 _keyRowLength = _keyLength+(_keySpacingDist*2)+_plateLengthWireExtension;
-_housingInternalHeightClearance = 10; //distance between bottom of plate and internal bottom of housing
+_housingInternalHeightClearance = 22; //distance between bottom of plate and internal bottom of housing
 
-//housing calculations must include arduino plate sizing later
+_housingLengthAddition = 10;
 _housingExternalWidth = _keyRowWidth+_housingThickness;
-_housingExternalLength = _keyRowLength+_housingThickness;
+_housingExternalLength = (_keyRowLength*_numRows)+_housingThickness+_housingLengthAddition;
 _housingHeight = _plateHeight + _housingInternalHeightClearance;
 
 
 main();
 
 module main(){
-    translate([0,0,_plateHeight+_keyCapShankOffsetRiserLength/4]){
-        //screenKeyCap();
-
-        translate([(-_keyCoverThickness/2)-_keyCoverInternalFitTolerance/2,-_keyCoverThickness/2-_keyCoverInternalFitTolerance/2,5]){
-            //screenKeyCapCover();
-        }
-        
-    }
-    
+    //fullBackPlate(); 
+    //patchBoard();
     housing();
+}
 
-    translate([(_housingThickness/2)+_housingFitTolerance/2,(_housingThickness/2)+_housingFitTolerance/2,_housingHeight-(_plateHeight)]){
-         keyPlate(true, true, true);
+module fullBackPlate(){
+    union(){
+        translate([(_housingThickness/2)+_housingFitTolerance/2,(_housingThickness/2)+_housingFitTolerance/2,_housingHeight-(_plateHeight)]){
+            for(i=[0:1:_numRows-1]){
+                translate([0,i*_plateLength,0]){
+                    if(i<_numRows-1){
+                        rowPlate();
+                    }
+                    else{
+                        rowPlateWithLengthExtension();
+                    }
+                }
+            }
+        }
     }
-   
-
-    //controlBoardModel();
 }
 
 module screenModel(){
@@ -155,7 +166,7 @@ module screenKeyCapCover(){
 
 module controlBoardModel(){
     screwHoleEdgeDistance = 2.5;
-     screwHoleADistFromXAxis = 14.0;
+    screwHoleADistFromXAxis = 14.0;
     screwHoleADistFromYAxis = _controlBoardWidth-screwHoleEdgeDistance;
 
     screwHoleBDistFromXAxis = 15.3;
@@ -167,25 +178,25 @@ module controlBoardModel(){
     screwHoleDDistFromXAxis = 96.52;
     screwHoleDDistFromYAxis = _controlBoardWidth-screwHoleEdgeDistance;
     union(){
-        translate([0,6,0]){
+        translate([0,6.5,0]){
             difference(){
                 union(){
                     cube(size=[_controlBoardWidth, _controlBoardLength, 2]);
                     //screwhole standoffs
                     translate([screwHoleADistFromYAxis,screwHoleADistFromXAxis,1]){
-                        cylinder(r=_controlBoardScrewHoleDiameter-.9, h=4, $fn=100);
+                        cylinder(r=_controlBoardScrewHoleDiameter-.5, h=4, $fn=100);
                     }
 
                     translate([screwHoleBDistFromYAxis,screwHoleBDistFromXAxis,1]){
-                        cylinder(r=_controlBoardScrewHoleDiameter-.9, h=4, $fn=100);
+                        cylinder(r=_controlBoardScrewHoleDiameter-.5, h=4, $fn=100);
                     }
 
                     translate([screwHoleCDistFromYAxis,screwHoleCDistFromXAxis,1]){
-                        cylinder(r=_controlBoardScrewHoleDiameter-.9, h=4, $fn=100);
+                        cylinder(r=_controlBoardScrewHoleDiameter-.5, h=4, $fn=100);
                     }
 
                     translate([screwHoleDDistFromYAxis,screwHoleDDistFromXAxis,1]){
-                        cylinder(r=_controlBoardScrewHoleDiameter-.9, h=4, $fn=100);
+                        cylinder(r=_controlBoardScrewHoleDiameter-.5, h=4, $fn=100);
                     }
                 }
                
@@ -213,14 +224,14 @@ module controlBoardModel(){
         dcJackPortWidth=9.5;
         usbPortWidth=11.5;
         usbPortHeight=8;
-        dcRearOverhangLength = 3;
+        dcRearOverhangLength = 2.5;
         //test port alignments
         translate([0,-dcRearOverhangLength,0]){
             
             difference(){
                 union(){
-                     cube(size=[_controlBoardWidth, 5, maxPortHeight]);
-                     translate([0,5,0])
+                     cube(size=[_controlBoardWidth, (_housingThickness/2)-.2, 23]);
+                     translate([0,5.5,0])
                      cube(size=[_controlBoardWidth, dcRearOverhangLength+1, 2]);
                 }
                
@@ -271,55 +282,174 @@ module keyCapShankConnector()
     }
 }
 
+module patchBoard(){
+    union(){
+        difference(){
+            union(){
+                cube(size=[_patchBoardWidth, _patchBoardLength, 2]);
+
+                 translate([_patchBoardWidth/2, 2.5+(_controlBoardScrewHoleDiameter/2), 1]){
+                    cylinder(r=_controlBoardScrewHoleDiameter-.5, 4, $fn=100);
+                    translate([0,_patchboardHoleDist,0]){
+                            cylinder(r=_controlBoardScrewHoleDiameter-.5, 4, $fn=100);
+                    }
+                }
+            }
+            translate([_patchBoardWidth/2, 2.5+(_controlBoardScrewHoleDiameter/2), -1]){
+                cylinder(r=_controlBoardScrewHoleDiameter/2, 8, $fn=100);
+                translate([0,_patchboardHoleDist,0]){
+                      cylinder(r=_controlBoardScrewHoleDiameter/2, 8, $fn=100);
+                }
+            }
+        }
+        
+    }
+}
+
 module housing(){
     union(){
         difference(){
-            roundedCube(size = [_housingExternalWidth, _housingExternalLength, _housingHeight], radius = .4, apply_to="yMax");
+            roundedCube(size = [_housingExternalWidth, _housingExternalLength, _housingHeight+2], radius = .4, apply_to="all");
 
             translate([_housingThickness/2,_housingThickness/2,_housingThickness/2]){
-                cube(size = [_keyRowWidth + _housingFitTolerance, _keyRowLength+_housingFitTolerance, _housingHeight]);
+                cube(size = [_keyRowWidth + _housingFitTolerance, (_keyRowLength*_numRows)+_housingFitTolerance+_housingLengthAddition, _housingHeight]);
             }
 
              //side screw mounts
-            translate([-.1,(_keyRowLength/6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
-                rotate([0,90,0]){
-                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
-                }
-            }
+             for(j=[0:1:_numRows-1]){
+                    translate([0,(_keyRowLength*j),0]){
+                        translate([-.1,(_keyRowLength/6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
+                            rotate([0,90,0]){
+                                cylinder(r=1.2, h=_m2KnurlCutoutHeight, $fn=200);
+                                translate([0,0,-.5]){
+                                    cylinder(r=_m2ScrewHeadDiameter/2, h=2, $fn=200);
+                                }
+                            }
+                        }
 
-            translate([-.1,(_keyRowLength-6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
-                rotate([0,90,0]){
-                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
-                }
-            }
+                        translate([-.1,(_keyRowLength-6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
+                            rotate([0,90,0]){
+                               cylinder(r=1.2, h=_m2KnurlCutoutHeight, $fn=200);
+                                translate([0,0,-.5]){
+                                    cylinder(r=_m2ScrewHeadDiameter/2, h=2, $fn=200);
+                                }
+                            }
+                        }
 
-            translate([_keyRowWidth + _housingFitTolerance+(_m2KnurlCutoutDiameter/2)
-            ,(_keyRowLength/6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
-                rotate([0,90,0]){
-                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
-                }
-            }
+                        translate([_keyRowWidth + _housingFitTolerance+(_m2KnurlCutoutDiameter/2)
+                        ,(_keyRowLength/6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
+                            rotate([0,90,0]){
+                                cylinder(r=1.2, h=_m2KnurlCutoutHeight, $fn=200);
+                                translate([0,0,1.5]){
+                                    cylinder(r=_m2ScrewHeadDiameter/2, h=2, $fn=200);
+                                }
+                            }
+                        }
 
-            translate([_keyRowWidth + _housingFitTolerance+(_m2KnurlCutoutDiameter/2),
-            (_keyRowLength-6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
-                rotate([0,90,0]){
-                    cylinder(r=_m2KnurlCutoutDiameter/2, h=_m2KnurlCutoutHeight, $fn=200);
+                        translate([_keyRowWidth + _housingFitTolerance+(_m2KnurlCutoutDiameter/2),
+                        (_keyRowLength-6)+_housingThickness/2,_housingHeight-(_plateHeight/2)]){
+                            rotate([0,90,0]){
+                                cylinder(r=1.2, h=_m2KnurlCutoutHeight, $fn=200);
+                                translate([0,0,1.5]){
+                                    cylinder(r=_m2ScrewHeadDiameter/2, h=2, $fn=200);
+                                }
+                            }
+                        }
                 }
+             }
+
+             translate([(_housingExternalWidth/2)-(_controlBoardWidth)-_housingThickness*2,
+             _housingExternalLength+(_housingThickness/2)-5,(_housingThickness/2)]){
+                cube(size=[_controlBoardWidth, _housingThickness*2, 21]);
             }
         }
+
+        
         //inner shelving
         translate([_housingThickness/2,_housingThickness/2,_housingHeight-_plateHeight]){
             rotate([270,0,0]){
-                rightTriangle(size=[3,4,_keyRowLength+_housingFitTolerance]);
+                rightTriangle(size=[3,4,(_keyRowLength*_numRows)+_housingFitTolerance+_housingLengthAddition]);
             }
         }
 
-          translate([(_keyRowWidth+_housingThickness/2)+_housingFitTolerance,(_keyRowLength+_housingThickness/2)+_housingFitTolerance,_housingHeight-_plateHeight]){
-                rotate([270,0,180]){
-                    rightTriangle(size=[3,4,_keyRowLength+_housingFitTolerance]);
+        translate([(_keyRowWidth+_housingThickness/2)+_housingFitTolerance,
+        ((_keyRowLength*_numRows)+_housingThickness/2)+_housingFitTolerance+_housingLengthAddition,_housingHeight-_plateHeight]){
+            rotate([270,0,180]){
+                rightTriangle(size=[3,4,(_keyRowLength*_numRows)+_housingFitTolerance+_housingLengthAddition]);
+            }
+        }
+
+         translate([_housingThickness/2,_housingThickness/2,_housingHeight-_plateHeight]){
+            rotate([0,90,0]){
+                rightTriangle(size=[3,4,_housingExternalWidth-_housingThickness]);
+            }
+        }
+
+        //  translate([_housingExternalWidth- _housingThickness/2, _housingExternalLength- _housingThickness/2,_housingHeight-_plateHeight]){
+        //     rotate([180,90,0]){
+        //         rightTriangle(size=[3,4,_housingExternalWidth-_housingThickness]);
+        //     }
+        // }
+
+        totalKeysPerRow = _basicKeysPerRow + _screenKeysPerRow;
+        //plate supports
+        if(totalKeysPerRow > 2){
+            for(j=[0:1:_numRows-1]){
+                translate([0,((_keyRowLength)*j), 0]){
+                     for(i=[3:4:totalKeysPerRow-1]){
+                        translate([_housingThickness+((_plateWidth)*i),
+                        _housingThickness/2+(_keyRowLength/2), _housingThickness/2]){
+                            cylinder(r=2.5, h=_housingHeight-_plateHeight-2.6, $fn=200);
+                            cylinder(r1=4, r2=2, h=5, $fn=200);
+                        }
+                    }
                 }
             }
+        }
+
+        if(_useFullHousing){
+            rotate([0, 0, 180]) {
+                translate([-_housingExternalWidth/2+_housingThickness*2,
+                -_housingExternalLength+(_housingThickness/2),
+                (_housingThickness/2)-2]){
+                    controlBoardModel();
+                }
+            }
+
+            translate([_patchBoardLength/2+_housingThickness+_housingExternalWidth/3,(_housingExternalLength/2)-_housingThickness,(_housingThickness/2)-2]){
+                rotate([0,0,00]){
+                    patchBoard();
+                }
+            }
+        }
+
     }
+}
+
+module rowPlate(){
+     totalKeys = _screenKeysPerRow + _basicKeysPerRow;
+    for(i=[0:1:totalKeys-1]){
+        addRoute = i < totalKeys - 1;
+        translate([i*_plateWidth,0,0]){
+           keyPlate(addRoute, true, !addRoute);
+        }
+    }
+}
+
+module rowPlateWithLengthExtension(){
+     totalKeys = _screenKeysPerRow + _basicKeysPerRow;
+    union(){
+        for(i=[0:1:totalKeys-1]){
+            addRoute = i < totalKeys - 1;
+            translate([i*_plateWidth,0,0]){
+                keyPlate(addRoute, true, !addRoute);
+            }
+        }
+        translate([0,_plateLength,0]){
+            cube(size=[_plateWidth*totalKeys, _housingLengthAddition, _plateHeight]);
+        }
+    } 
+    
 }
 
 module keyPlate(includeRoute = true, includeLeftScrews = true, includeRightScrews = true){
